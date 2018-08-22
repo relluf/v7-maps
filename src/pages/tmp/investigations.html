@@ -1,0 +1,51 @@
+<template1><div class="page page-with-subnavbar-">
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="left sliding">
+				<a href="." class="back link"> <i class="icon icon-back"></i><span class="ios-only">{{l "Back"}}</span></a>
+	        </div>
+	        <div class="center title sliding">{{l "Onderzoek.plural.title"}}</div>
+	        <div class="right sliding"></div>
+	    </div>
+	</div>
+	<div class="page-content">
+		<div class="searchbar-backdrop"></div>
+		<div class="block block-strong">
+			<p>Alle onderzoeken, recent gewijzigde eerst. Middels het zoekveld hierboven kunt u de lijst filteren overeenkomstig de attributen naam, projectcode en/of bedrijf. <span class='count'></span>
+			</p>
+		</div>
+		<form class="searchbar searchbar-init">
+			<div class="searchbar-inner">
+				<div class="searchbar-input-wrap">
+					<input type="search" placeholder="{{l 'Search.placeholder'}}">
+					<i class="searchbar-icon"></i>
+					<span class="input-clear-button"></span>
+				</div>
+				<span class="searchbar-disable-button">{{l "Cancel.search"}}</span>
+			</div>
+		</form>
+		<div class="list virtual-list searchbar-found media-list"></div>
+		<div class="list searchbar-not-found">
+			<ul><li class="item-content"><div class="item-inner">
+				<div class="item-title">{{l "NothingFound"}}</div>
+			</div></li></ul>
+		</div>
+	</div>	
+	
+	<!--<div class="page-content ptr-content">-->
+	<!--    <div class="searchbar-backdrop"></div>-->
+	<!--	<div class="ptr-preloader">-->
+	<!--		<div class="preloader"></div>-->
+	<!--		<div class="ptr-arrow"></div>-->
+	<!--	</div>-->
+	<!--</div>-->
+</div></template1>
+
+
+
+
+		  <!--  <div class="subnavbar">-->
+				<!--<div class="subnavbar-inner">-->
+				<!--	<div class="title">{{l "Onderzoek.plural.title"}}</div>-->
+				<!--</div>-->
+		  <!--  </div>-->

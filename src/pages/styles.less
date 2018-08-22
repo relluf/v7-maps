@@ -1,0 +1,261 @@
+@supports(padding: max(0px)) {
+    .safe-area-inset-width {
+        padding-left: max(12px, constant(safe-area-inset-left));
+        padding-right: max(12px, constant(safe-area-inset-right));
+    }
+}
+
+/* pages */
+body.ios { background-color: black; background: black; }
+
+.searchbar-inner { top: -6px; }
+.page-investigations {
+	li:not(.meetpunten-valid):not(.has-contour) {
+		background-color-: rgba(255, 0, 0, 0.1);
+	}
+	
+	li .item-ago {
+		color: silver;
+		white-space: nowrap;
+	}
+	
+	li .item-text .chip {
+		float: right;
+		
+		&.LOPEND { background-color: #ec983f; }
+		&.RAPPORTAGE { background-color: #75b6ff; }
+		&.GEREED { background-color: #5acc5c; }
+		&.ARCHIEF { background-color: #a78383; }
+		&.FACTURATIE { background-color: #db1b1b; }
+		
+	}
+	
+	li .item-summary {
+		position: relative;
+		top: -4px;
+		color: #333;
+	}
+}
+
+.page:not(.loading) .hide-when-page-not-loading {
+	display: none;
+}
+.page.loading .hide-when-page-loading {
+	display: none;
+}
+
+.page-content {
+	.center { text-align: center; }
+	.title { font-size: 32pt; font-weight: bold; }
+	.subtitle { font-size: 20pt; }
+	
+	.button-block {
+		padding-top:16px;
+		margin-left:auto;
+		margin-right:auto;
+		width: 340px;
+		display:flex;
+		a {
+			margin-right:8px;
+			margin-left:8px;
+		}
+		.button-forward {
+			i.icon-forward { 
+				/*- todo function for transform and use again in button-next */
+				transform: scale3d(0.7,0.7,1) translate3d(-2px,-2px,0); 
+				position:absolute;right:12px;top:13.5px; 
+			}
+		}
+		.button-back {
+			i.icon-back { 
+				/*- todo function for transform and use again in button-next */
+				transform: scale3d(0.7,0.7,1) translate3d(-2px,-2px,0); 
+				position:absolute;left:12px;top:13.5px; 
+			}
+		}
+		.button-new.button-new.button-new {
+			text-align:center;
+			font-size:9.5pt;
+			padding-top:8px;
+			font-weight: 500;
+			i.fa-plus {left:0;position:absolute;width:100%;}
+		}
+	}
+	
+	.list {
+		&.item-after-shrink .item-inner {
+			.item-title {
+				flex-shrink: 0;
+			}
+			.item-after {
+				flex-shrink: 1;
+				display:block;
+				overflow:hidden;
+				text-overflow:ellipsis;
+			}
+		}
+		&.item-title-full-width .item-title {
+			width: auto;
+		}
+
+		
+		.item-content .item-inner.active-state {
+			background-color: #d9d9d9;
+		}
+	}
+	
+	.menu-icon {
+		color: white; padding: 4px 2px; border-radius: 6px;
+		border:1px solid transparent;
+		box-sizing: content-box;
+	} 
+	
+	.item-title.label.icon-only { font-size: 20pt; text-align: center; }
+}
+
+.flex1 { flex: 1; }
+.flex2 { flex: 2; }
+.flex3 { flex: 3; }
+.flex4 { flex: 4; }
+.flex5 { flex: 5; }
+.flex10 { flex: 10; }
+
+/* mapkit */
+.mk-logo-control { display: none; }
+
+.iphonex .mk-logo-control {
+	padding-left: 10px;
+	padding-bottom: 20px;
+}
+.mk-top-left-controls-container, .mk-top-right-controls-container {
+	padding-top: 10px;
+}
+.iphonex .mk-top-left-controls-container {
+	padding-top: 30px;
+}
+.iphonex .mk-top-right-controls-container {
+	padding-top: 30px;
+}
+.iphonex .mk-bottom-right-controls-container {
+	padding-right: 10px;
+	padding-bottom: 20px;
+}
+.iphonex .mk-legal-controls {
+	display: none;
+}
+
+.panel.panel-left { width: 100%; max-width: 375px; }
+.device-ios:not(.with-statusbar) .panel-left {
+	padding-top: 18px;
+	background-color: rgb(247, 247, 248);
+}
+.iphonex:not(.with-statusbar) .panel-left {
+	padding-top: env(safe-area-inset-top);
+	background-color: rgb(247, 247, 248);
+}
+	
+#map { width: 100%; bottom: 0; top: 0; left: 0; position: absolute;}
+.swipe-handle {
+	position:absolute;
+	width: 50px;
+	top:70%; height:20%; 
+
+	&.left { left:0px; }
+	&.right { right:0px; .inner { opacity: 0; }}
+	
+	z-index:6000;
+	
+	.inner {
+		position: absolute;
+		border-radius: 65px;
+		left:10px; right:10px;
+		top:20px; bottom:0;
+	}
+
+	&.border {
+		.inner {
+			border: 1.5px solid rgba(210, 210, 210, 0.25);
+		}
+	}
+	&.black .inner {
+		background-color: black;
+	}
+	&.blur .inner {
+		background-color: rgba(255, 255, 255, 0.25);
+		-webkit-backdrop-filter: blur(3px);
+	}
+	
+}
+
+/* menu.html: 375px */ 
+html.with-panel-left-reveal .framework7-root>.view, html.with-panel-left-reveal .panel-backdrop, html.with-panel-left-reveal .views {
+	-webkit-transform-style: translate3d(375px,0,0);
+	transform: translate3d(375px,0,0);	
+}
+
+/**
+ * Framework7 Plugin 3D Panels 2.0.0
+ * Framework7 plugin to add 3d effect for side panels
+ * http://framework7.io/plugins/
+ *
+ * Copyright 2014-2018 Vladimir Kharlampidi
+ *
+ * Released under the MIT License
+ *
+ * Released on: February 24, 2018
+ */
+.with-panels-3d .framework7-root {
+  --webkit-perspective: 1100px;
+  -perspective: 1100px;
+  overflow: hidden;
+}
+.with-panels-3d .framework7-root .views {
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+.with-panels-3d .panel-reveal.panel-left {
+  -webkit-transform: translate3d(-375px, 0, 0);
+  transform: translate3d(-375px, 0, 0);
+}
+.with-panels-3d .panel-reveal.panel-right {
+  -webkit-transform: translate3d(375px, 0, 0);
+  transform: translate3d(375px, 0, 0);
+}
+.with-panels-3d.with-panel-left-reveal .framework7-root > .views,
+.with-panels-3d.with-panel-left-reveal .framework7-root > .view {
+  -webkit-transform: translate3d(375px, 0, 0) rotateY(-30deg);
+  transform: translate3d(375px, 0, 0) rotateY(-30deg);
+  -webkit-transform-origin: right center;
+  transform-origin: right center;
+}
+.with-panels-3d.with-panel-left-reveal .panel-left {
+  -webkit-transform: translate3d(0px, 0, 0);
+  transform: translate3d(0px, 0, 0);
+}
+.with-panels-3d.with-panel-right-reveal .framework7-root > .views,
+.with-panels-3d.with-panel-right-reveal .framework7-root > .view {
+  -webkit-transform: translate3d(-375px, 0, 0) rotateY(30deg);
+  transform: translate3d(-375px, 0, 0) rotateY(30deg);
+  -webkit-transform-origin: left center;
+  transform-origin: left center;
+}
+.with-panels-3d.with-panel-right-reveal .panel-right {
+  -webkit-transform: translate3d(0px, 0, 0);
+  transform: translate3d(0px, 0, 0);
+}
+.with-panels-3d.with-panel-left-reveal .framework7-root > .views,
+.with-panels-3d.with-panel-right-reveal .framework7-root > .views,
+.with-panels-3d.with-panel-left-reveal .framework7-root > .view,
+.with-panels-3d.with-panel-right-reveal .framework7-root > .view {
+  -webkit-transition-property: -webkit-transform-origin, -webkit-transform;
+  transition-property: -webkit-transform-origin, -webkit-transform;
+  transition-property: transform-origin, transform;
+  transition-property: transform-origin, transform, -webkit-transform-origin, -webkit-transform;
+}
+.md.with-panels-3d.with-panel-left-reveal .framework7-root > .views,
+.md.with-panels-3d.with-panel-right-reveal .framework7-root > .views,
+.md.with-panels-3d.with-panel-left-reveal .framework7-root > .view,
+.md.with-panels-3d.with-panel-right-reveal .framework7-root > .view {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}

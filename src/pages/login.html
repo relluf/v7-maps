@@ -1,0 +1,93 @@
+<template><div class="page login">
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="left sliding">
+	            <!--<a class="link reload">Reload</a>-->
+	        </div>
+	        <div class="center title sliding">{{l "Application.title"}}</div>
+	        <div class="right sliding"></div>
+	    </div>
+	</div>
+	<div class="page-content">
+		<div class="block center">
+			<div class="title"><i class="fa fa-user-circle"></i></div>
+			<div class="subtitle">{{l "Login.title"}}</div>
+			<p class="login-description hide-when-page-loading">{{l "Login.description.veldoffice"}}</p>
+		</div>
+		<div class="center hide-when-page-not-loading">
+			<div class="preloader preloader-big"></div>
+		</div>
+		<div class="center hide-when-page-loading">
+			<div class="list"><ul>
+				<li class="item-content">
+					<div class="item-inner">
+						<div class="item-title label icon-only flex3">
+							<i class="fa fa-vcard-o"></i>
+						</div>
+						<div class="item-input flex10">
+							<input type="email" name="user" placeholder="{{l 'Login-email.placeholder'}}">
+						</div>
+					</div>
+				</li>
+				<li class="item-content">
+					<div class="item-inner">
+						<div class="item-title label icon-only flex3">
+							<i class="fa fa-star"></i>
+						</div>
+						<div class="item-inpute flex10">
+							<input type="password" name="password" placeholder="{{l 'Login-password.placeholder'}}">
+						</div>
+					</div>
+				</li>
+			</ul></div>
+			<div class="button-block">
+				<a class="flex1"></a>
+				<a class="button flex5 login button-raised button-big button-fill">{{l "Login"}}</a>
+				<a class="flex1"></a>
+			</div>
+		</div>
+	</div>
+</div></template>
+<script>
+	var Session = require("veldoffice/Session");
+
+	function load(page) {
+		var email = localStorage.getItem('veldoffice/Session.user') || "";
+		var password = localStorage.getItem('veldoffice/Session.password') || "";
+		$("input[name=user]")[0].value = email;
+		$("input[name=password]")[0].value = password;
+	}
+	
+	function save(user, password) {
+		localStorage.setItem("veldoffice/Session.user", user);
+		localStorage.setItem("veldoffice/Session.password", password);
+	}
+	
+	return { on: {
+
+		pageInit(e) {
+			load(e.target);
+			e.target.classList.remove("loading");
+			$(".button.login", e.target).on("click", function() {
+				var user = $("input[name=user]")[0].value;
+				var password = $("input[name=password]")[0].value;
+				
+				e.target.classList.add("loading");
+				Session.login(user, password).then(function(result) {
+					if(result.success === true) {
+						localStorage.setItem("veldoffice/Session.user", user);
+						localStorage.setItem("veldoffice/Session.password", password);
+						e.target.f7Page.router.back();
+						save(user, password);
+					} else {
+						e.target.classList.remove("loading");
+						f7a.dialog.alert(result.message, locale("LoginFailure.title"));
+					}
+				});
+			});
+		}
+			
+	} };
+	
+	
+</script>

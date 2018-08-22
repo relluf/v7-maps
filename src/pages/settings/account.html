@@ -1,0 +1,30 @@
+<template><div class="page">
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="left sliding">
+				<a href="." class="back link"> <i class="icon icon-back"></i><span class="ios-only">Back</span></a>
+	        </div>
+	        <div class="title sliding">{{l "Account"}}</div>
+	        <div class="right">
+	        	<a class="link logout">{{l "Logout"}}</a>
+	        </div>
+	    </div>
+	</div>
+	<div class="page-content"></div>
+</div>
+</template>
+<script>
+	return {
+		on: {
+			pageInit(e) {
+				var $ = f7a.$;
+				
+				$(".navbar .logout", e.target).on("click", function() {
+					f7a.dialog.confirm(locale("AreYouSureToLogout"), locale(""))
+				})
+			}
+		}
+	};
+</script>
+<style>
+</style>

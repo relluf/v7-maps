@@ -1,0 +1,152 @@
+<template><div class="page page-with-subnavbar page-investigations">
+	<div class="navbar">
+		<div class="navbar-inner sliding navbar-current">
+			<div class="left"><a class="link back">
+				<i class="icon icon-back"></i>
+				<span class="ios-only">{{l "Back"}}</span>
+			</a></div>
+			<div class="title">{{l "Onderzoek.plural.title"}}</div>
+			<div class="subnavbar">
+				<form data-search-container=".virtual-list" data-search-item="li" data-search-in=".item-title" class="searchbar searchbar-init">
+					<div class="searchbar-inner">
+						<div class="searchbar-input-wrap">
+							<input type="search" placeholder="{{l 'Search.placeholder'}}">
+							<i class="searchbar-icon"></i>
+							<span class="input-clear-button"></span>
+						</div>
+						<span class="searchbar-disable-button">{{l "Cancel"}}</span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>	
+	<div class="searchbar-backdrop"></div>
+	<div class="page-content infinite-scroll-content ptr-content">
+	    <div class="ptr-preloader">
+			<div class="preloader"></div>
+			<div class="ptr-arrow"></div>
+	    </div>
+		<div class="block">
+			<p>Alle onderzoeken, recent gewijzigde eerst. Middels het zoekveld hierboven kunt u de lijst filteren overeenkomstig de attributen naam, projectcode en/of bedrijf.</p>
+		</div>
+		<div class="list virtual-list searchbar-found media-list"></div>
+		<div class="list searchbar-not-found">
+			<ul><li class="item-content"><div class="item-inner">
+				<div class="item-title">{{l "NothingFound"}}</div>
+			</div></li></ul>
+		</div>
+	    <div class="preloader infinite-scroll-preloader"></div>
+	</div>
+</div></template>
+
+<script>
+
+	var template = require("text!pages/investigations-template.html");
+	var EM = require("veldoffice/EM");
+	var arr = [];
+	var pages = [];
+
+	function match(onderzoek, query) {
+		return query.split(" ").some(function(query) {
+			if(query.indexOf("count-meetpunt") === 0) {
+				return onderzoek.count_valid_meetpunten >= parseInt(query.split(":")[1], 10);
+			}
+			
+			return ["projectcode", "naam", "bedrijf"].some(function(key) {
+				var str = onderzoek[key];
+				return typeof str === "string" 
+					&& str.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+			});
+		});
+	}
+	function nextPage() {
+		return EM.query({ 
+			path: "onderzoek",  
+			attributes: [
+				// "countdistinct:[outer]fotos.id count_fotos",
+				"countdistinct:[outer]meetpunten.id count_meetpunten",
+				// "countdistinct:[outer]labopdrachten.id count_labopdrachten",
+				"[outer]bedrijf.naam bedrijf", 
+				"id", "naam", "projectcode", "contour",
+				"created", "modified", "status", "methode"
+			],
+			criteria: {
+				page: [pages.length, 50],
+				groupBy: "id", 
+				orderBy: "modified desc"
+			}
+		}).then(function(res) {
+			pages.push(res);
+			arr.splice.apply(arr, res);
+			return res;
+		});
+	}	
+
+	return { on: {
+		pageInit(e) {
+			
+			var ptr = e.target.qs(".ptr-content");
+			ptr.on("ptr:refresh", function(e) {
+				pages = [];
+				arr = [].splice(0, arr.length);
+				nextPage().then(function() {
+					f7a.ptr.done(ptr);	
+					f7a.virtualList.get(e.target.qs(".virtual-list")).update();
+				});
+			});
+			
+			e.target.qs(".infinite-scroll-content").on("infinite", function() {
+				nextPage().then(function() {
+					f7a.virtualList.get(e.target.qs(".virtual-list")).update();
+				});
+			});
+			
+			nextPage().then(function() { 
+				f7a.virtualList.create({
+					el: e.target.qs(".virtual-list"),
+			    	cache: true,
+			    	rowsAfter: 10,
+			    	rowsBefore: 10,
+			        items: arr,
+			        itemTemplate: template,
+			        searchAll: function(query, items) {
+			            var found = [];
+			            for (var i = 0; i < items.length; i++) {
+			                if (query.trim() === '' || match(items[i], query)) {
+			                    found.push(i);
+			                }
+			            }
+			            $$(".count", this.node).html(found.length);
+			            return found;
+			        },
+			        height: 105
+			    });
+			});
+		}
+		// "form .searchbar-input input focus": function() {
+		// 	V7.f7a.hideNavbar($$(".view-left .navbar"));
+			
+		// 	this.up(".page")
+		// 		.down(".page-content.pull-to-refresh-content")
+		// 		.style.paddingTop = "9px";
+		// 	this.up(".page").down("form.searchbar").style.top = "0";
+		// },
+		// "form .searchbar-input input blur": function() {
+		// 	V7.f7a.showNavbar($$(".view-left .navbar"));
+			
+		// 	this.up(".page")
+		// 		.down(".page-content.pull-to-refresh-content")
+		// 		.style.paddingTop = "";
+		// 	this.up(".page").down("form.searchbar").style.top = "";
+		// },
+		// ".virtual-list click": function(e) {
+		// 	var li = e.target.up("li");
+		// 	var index = li.f7VirtualListIndex;
+		// 	var collection = V7.qs("Collection<Onderzoek>");
+		// 	V7.emit("Onderzoek selected", [collection.getObject(index)]);
+		// }
+	} };
+
+</script>
+
+

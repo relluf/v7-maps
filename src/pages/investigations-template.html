@@ -1,0 +1,36 @@
+<li data-key="{{id}}" class="{{classes}}"><a class="item-link item-content item-onderzoek"> 
+	<!--<div class="item-media"><img src="https://cdn0.iconfinder.com/data/icons/industrial-circle/512/hatch_polygon-512.png" width="44"></div>-->
+	<div class="item-inner"> 
+		<div class="item-title-row"> 
+			<div class="item-title">{{naam}}&nbsp;</div> 
+			<span class="item-ago">{{ago}}</span> 
+		</div> 
+		<div class="item-subtitle">{{projectcode}} - {{bedrijf}}</div>
+		<div class="item-text">
+			<div><span>{{methode}}</span><div class="chip {{status.id}}"><div class="chip-label">{{status.name}}</div></div>
+			</div>
+			<div class="item-summary">
+				<span title="{{count_fotos}} foto's">
+					<i class="fa fa-camera"></i> {{count_fotos}}
+				</span>
+				<span title="{{count_meetpunten}} meetpunten">
+					<i class="fa fa-dot-circle-o"></i> {{count_valid_meetpunten}} / {{count_meetpunten}}
+				</span>
+				<span title="{{count_labopdrachten}} labopdrachten">
+					<i class="fa fa-flask"></i> {{count_labopdrachten}}
+				</span>
+				<span title="? documenten">
+					<i class="fa fa-files-o"></i> ?{{count_documenten}}
+				</span>
+<!--
+				<span title="0 extra kaarten">
+					<i class="fa fa-map-o"></i> 0
+				</span>
+				<span title="0 extra kaarten">
+					<i class="fa fa-warning"></i> 0
+				</span>
+-->
+			</div>
+		</div>
+	</div> 
+</a></li>
