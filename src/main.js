@@ -31,7 +31,6 @@ define(function(require) {
 	        }
 	    ]);
 	}
-	
 
 	/* Make life easier */
 	var qsa = Element.prototype.querySelectorAll;
@@ -174,7 +173,7 @@ define(function(require) {
 	window.req = req;
 
 	if(window.location.toString().endsWith("cordova")) {
-		require(["script!../../cordova/cordova.js"]);
+		require(["script!../../v7-cordova/cordova.js"]);
 		app.statusbar.hide();
 	}
 
