@@ -1,0 +1,51 @@
+<template><div class="page fotos page-with-subnavbar">
+	<div class="navbar">
+		<div class="navbar-inner sliding navbar-current">
+			<div class="left"><a class="link back">
+				<i class="icon icon-back"></i>
+				<span class="ios-only">{{l "Back"}}</span>
+			</a></div>
+			<div class="title">{{l "Foto.plural.title"}}</div>
+			<div class="subnavbar">
+				<form data-search-container=".virtual-list" data-search-item="li" data-search-in=".item-title" class="searchbar searchbar-init">
+					<div class="searchbar-inner">
+						<div class="searchbar-input-wrap">
+							<input type="search" placeholder="{{l 'Search.placeholder'}}">
+							<i class="searchbar-icon"></i>
+							<span class="input-clear-button"></span>
+						</div>
+						<span class="searchbar-disable-button">{{l "Cancel"}}</span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>	
+	<div class="searchbar-backdrop"></div>
+	<div class="page-content hide-navbar-on-scroll infinite-scroll-content ptr-content">
+	    <div class="ptr-preloader">
+			<div class="preloader"></div>
+			<div class="ptr-arrow"></div>
+	    </div>
+	    <div class="block searchbar-hide-on-search">
+			<p>{{l "Foto.search-label"}}</p>
+		</div>
+		<div class="list onderzoek virtual-list searchbar-found media-list">
+		</div>
+		<div class="list searchbar-not-found">
+			<ul><li class="item-content"><div class="item-inner">
+				<div class="item-title">{{l "NothingFound"}}</div>
+			</div></li></ul>
+		</div>
+		<div class="search-on-server">
+			<div class="button-block">
+				<a class="flex1"></a>
+				<a class="button flex5 login button-raised button-big button-fil">{{l "Search-on-server"}}</a>
+				<a class="flex1"></a>
+			</div>
+		</div>
+	    <div class="preloader infinite-scroll-preloader searchbar-hide-on-search"></div>
+	</div>
+</div></template>
+<script></script>
+<style>
+</style>

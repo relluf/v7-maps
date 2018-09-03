@@ -26,7 +26,10 @@ define(function() { return {
 	
 	"*.factories/": {
 		"key": function() { return this.id; },
-		"title": function(entity, factory, options) { return entity; }
+		"title": function(entity, factory, options) { return entity; },
+		"classes": function() {
+			return "hello-world";
+		}
 	},
 	
 	"Foto": {
@@ -36,6 +39,8 @@ define(function() { return {
 			}
 		}
 	},
+	
+	"Veldoffice":									".",
 	
 	"Onderzoek": {
 		".attributes":					"",
@@ -47,6 +52,19 @@ define(function() { return {
 				this.naam && r.push(this.naam);
 				r = r.join(", ");
 				return r;
+			},
+			"classes": function() {
+				var r = [];
+				if(this.count_meetpunten_with_coords) {
+					r.push("has-meetpunten-with-coords");
+				}
+				if(this.contour) {
+					r.push("has-contour");
+				}
+				if(this.count_fotos) {
+					r.push("has-fotos");
+				}
+				return r.join(" ");
 			}
 		}
 	},

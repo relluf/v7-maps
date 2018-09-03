@@ -1,3 +1,12 @@
+.flex1 { flex: 1; }
+.flex2 { flex: 2; }
+.flex3 { flex: 3; }
+.flex4 { flex: 4; }
+.flex5 { flex: 5; }
+.flex10 { flex: 10; }
+.bold { font-weight:  bold; }
+.display-none { display: none; }
+
 @supports(padding: max(0px)) {
     .safe-area-inset-width {
         padding-left: max(12px, constant(safe-area-inset-left));
@@ -8,31 +17,33 @@
 /* pages */
 body.ios { background-color: black; background: black; }
 
-.searchbar-inner { top: -6px; }
-.page-investigations {
-	li:not(.meetpunten-valid):not(.has-contour) {
-		background-color-: rgba(255, 0, 0, 0.1);
+/*.searchbar-inner { top: -6px; }*/
+
+.list.onderzoek {
+	li:not(.has-meetpunten-with-coords):not(.has-contour) {
+		/* background-color: hsl(0, 100%, 96%); */
 	}
-	
-	li .item-ago {
+	.item-ago {
 		color: silver;
 		white-space: nowrap;
+		font-size: 9pt;
 	}
-	
-	li .item-text .chip {
+	.item-text .chip:not(.methode) {
 		float: right;
-		
-		&.LOPEND { background-color: #ec983f; }
-		&.RAPPORTAGE { background-color: #75b6ff; }
-		&.GEREED { background-color: #5acc5c; }
-		&.ARCHIEF { background-color: #a78383; }
-		&.FACTURATIE { background-color: #db1b1b; }
-		
 	}
+	.chip.GEREED { background-color: #ec983f; color: white; font-weight: bold;}
+	.chip.RAPPORTAGE { background-color: #75b6ff; }
+	.chip.LOPEND { background-color: #5acc5c; color: white; font-weight: bold;}
+	.chip.ARCHIEF { background-color: #a78383; }
+	.chip.FACTURATIE { background-color: #db1b1b; }
 	
-	li .item-summary {
+	.chip.show-on-map { margin-right: 4px; background-color: #007aff; color: white; font-weight: bold;}
+	.chip.methode { background-color: transparent; color: silver; border: 1px solid silver; }
+	
+	li .item-text { max-height: none; }
+	
+	.item-summary {
 		position: relative;
-		top: -4px;
 		color: #333;
 	}
 }
@@ -46,7 +57,8 @@ body.ios { background-color: black; background: black; }
 
 .page-content {
 	.center { text-align: center; }
-	.title { font-size: 32pt; font-weight: bold; }
+	.center.title { padding-left: 15px; padding-right: 15px; }
+	.title { font-size: 32pt; font-weight: bold;}
 	.subtitle { font-size: 20pt; }
 	
 	.button-block {
@@ -60,13 +72,18 @@ body.ios { background-color: black; background: black; }
 			margin-left:8px;
 		}
 		.button-forward {
+			padding-right:12px;
+			padding-left:0;
+			font-size:12pt;
 			i.icon-forward { 
 				/*- todo function for transform and use again in button-next */
 				transform: scale3d(0.7,0.7,1) translate3d(-2px,-2px,0); 
-				position:absolute;right:12px;top:13.5px; 
+				position:absolute;right:10px;top:13px; 
 			}
 		}
 		.button-back {
+			padding-left:12px;
+			font-size:12pt;
 			i.icon-back { 
 				/*- todo function for transform and use again in button-next */
 				transform: scale3d(0.7,0.7,1) translate3d(-2px,-2px,0); 
@@ -81,44 +98,359 @@ body.ios { background-color: black; background: black; }
 			i.fa-plus {left:0;position:absolute;width:100%;}
 		}
 	}
-	
+
 	.list {
-		&.item-after-shrink .item-inner {
-			.item-title {
-				flex-shrink: 0;
+		&.list-attributes {
+			.item-content .item-after { 
+				font-size: 12pt; 
+				font-weight: bold; 
+				color: #333;
 			}
-			.item-after {
-				flex-shrink: 1;
-				display:block;
-				overflow:hidden;
-				text-overflow:ellipsis;
+			.item-inner {
+				.item-title {
+					flex-shrink: 0;
+				}
+				.item-after {
+					flex-shrink: 1;
+					display:block;
+					overflow:hidden;
+					text-overflow:ellipsis;
+				}
 			}
 		}
+
 		&.item-title-full-width .item-title {
 			width: auto;
 		}
-
-		
 		.item-content .item-inner.active-state {
 			background-color: #d9d9d9;
 		}
+		.item-footer.required {
+			font-weight: bold;
+			color: red;
+		}
+		.item-inner .changed { 
+			color: #007aff; 
+			font-weight: bold;
+		}
 	}
-	
+
+
 	.menu-icon {
 		color: white; padding: 4px 2px; border-radius: 6px;
 		border:1px solid transparent;
 		box-sizing: content-box;
 	} 
-	
 	.item-title.label.icon-only { font-size: 20pt; text-align: center; }
 }
 
-.flex1 { flex: 1; }
-.flex2 { flex: 2; }
-.flex3 { flex: 3; }
-.flex4 { flex: 4; }
-.flex5 { flex: 5; }
-.flex10 { flex: 10; }
+
+.page .\#map {
+	
+	.overlay { 
+		z-index: 999;
+		opacity: 0; 
+		pointer-events: none; 
+		top: 0; left: 0; bottom: 0; right: 0;
+		position: absolute;
+		transition: 0.3s opacity ease-out; 
+		background-color: gray;
+	}
+	.sheet {
+		z-index: 999;
+		position: absolute;
+		left: 0; right: 0;
+		max-width: 375px;
+		height: 600px;
+		bottom: -20px;
+		overflow:auto;
+		background-color: #fff;
+		background-color: rgba(250, 250, 250, 0.9);
+		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+		border-top-left-radius: 13px;
+		border-top-right-radius: 13px;
+		transition: transform 0.25s cubic-bezier(.27,.56,.05,.97);
+	}
+	.sheet.dragging {
+		transition: transform 0s;
+	}
+	.loading .sheet {
+		opacity: 0;
+		transition: transform 3.25s cubic-bezier(.27,.56,.05,.97);
+	}
+	.sheet.after-drag {
+		transition: transform 0.25s cubic-bezier(.51,.92,.24,1.2);
+	}
+	.sheet .handle {
+		position: absolute;
+		border-radius: 3px;
+		border: 2.5px solid gray;
+		opacity: 0.5;
+		top: 6px;
+		width: 8%;
+		margin-left: 46%;
+		/*pointer-events: none;*/
+	}
+	
+	.search-bar {
+		margin-top: 7px;
+		padding: 8px 14px 12px 14px;
+		display: flex;
+	}
+	.search-bar input {
+		border-radius: 8px;
+		border: 1px solid transparent;
+		color: gray;
+		padding: 6px 6px 7px 6px;
+		/*padding-left: 24px;*/
+		background-color: rgba(128, 128, 128, 0.15);
+		font: 12pt helvetica;
+		flex: 10;
+	}
+	.search-bar #cancel {
+		color: rgb(56, 121, 217);
+		background-color: transparent;
+		border: none;
+		font-size: 12pt;
+		padding: 6px;
+		border-radius: 7px;
+		transition: transform 0.5s, margin-left 0.5s, padding 0.5s;
+		transition-delay: 0s, 0s, 0s;
+		margin-left: 0;
+		flex: 1;
+	}
+	.search-bar #cancel.hidden {
+		transform: scale3d(0,0,0);
+		padding: 0;
+		margin-left: -10%;
+		width: 0;
+	}
+	.search-bar input::-webkit-input-placeholder {
+		text-align: center;
+	}
+	
+	.sheet .list-block ul { background: transparent; }
+	.sheet .list-block ul ul { padding-left: 0; }
+	.no-margin { margin: 0; }
+	
+/*------------------------------------------------------------------*/
+
+    a:not(.history-back):not(.history-forward) i.fa { 
+    	/* TODO navar */
+    	font-size: 22px; 
+    }
+    
+	.map-grid {
+		background-size: 96px 96px;
+		background-color: transparent;
+		background-image: 
+		linear-gradient(0deg, transparent 9%, 
+			rgba(255, 255, 255, .9) 10%, rgba(255, 255, 255, .9) 12%, transparent 13%, transparent 29%, 
+			rgba(255, 255, 255, .5) 30%, rgba(255, 255, 255, .5) 31%, transparent 32%, transparent 49%, 
+			rgba(255, 255, 255, .5) 50%, rgba(255, 255, 255, .5) 51%, transparent 52%, transparent 69%, 
+			rgba(255, 255, 255, .5) 70%, rgba(255, 255, 255, .5) 71%, transparent 72%, transparent 89%,
+			rgba(255, 255, 255, .5) 90%, rgba(255, 255, 255, .5) 91%, transparent 92%, transparent),
+		linear-gradient(90deg, transparent 9%, 
+			rgba(255, 255, 255, .9) 10%, rgba(255, 255, 255, .9) 12%, transparent 13%, transparent 29%, 
+			rgba(255, 255, 255, .5) 30%, rgba(255, 255, 255, .5) 31%, transparent 32%, transparent 49%, 
+			rgba(255, 255, 255, .5) 50%, rgba(255, 255, 255, .5) 51%, transparent 52%, transparent 69%, 
+			rgba(255, 255, 255, .5) 70%, rgba(255, 255, 255, .5) 71%, transparent 72%, transparent 89%,
+			rgba(255, 255, 255, .5) 90%, rgba(255, 255, 255, .5) 91%, transparent 92%, transparent);
+	}
+	
+   .searchbar { /*- see below in this file for iOS specific rules */
+	    z-index: 1200;
+	    -webkit-transition: 300ms margin-top, 500ms opacity;
+    	margin-top: -88px;
+    	background-color: #f0f0f0;//rgb(247, 247, 248);
+    	opacity:0;
+	    &.activated {
+	    	opacity: 1;
+			margin-top: -44px;
+	    }
+    }
+   .searchbar-overlay {
+	    background-color: rgba(0, 0, 0, 0.2);
+	    z-index: 2000;
+	    top: 44px;
+    	.list-block { 
+    		margin: 0; 
+    		.item-title { color: black; }
+    	}
+    }
+    
+	path.leaflet-line {
+	    stroke: #50622b;
+	    stroke-width: 2;
+	}
+	div.leaflet-edge {
+	    background-color: #95bc59;
+	    box-shadow: 0 0 0 2px white, 0 0 10px rgba(0, 0, 0, .35);
+	    border-radius: 50%;
+	    cursor: move;
+	    outline: none;
+	    transition: background-color .25s;
+	}
+	div.leaflet-edge.disabled {
+	    pointer-events: none;
+	    background-color: #bbb;
+	}
+	path.leaflet-polygon {
+	    fill: #b4cd8a;
+	    stroke: #50622b;
+	    stroke-width: 2;
+	    fill-opacity: .75;
+	}	
+	
+	.progress-panel {
+		z-index: 100000;
+		position: absolute;
+		right: 10%;
+		bottom: 68px;
+		min-width: 10%;
+		visibility: hidden; /* TODO */
+		
+		.progress#meetpunten .progress-bar {
+			background-color: yellow;
+		}
+		.progress#onderzoeken .progress-bar {
+			background-color: rgba(0, 0, 255, 0.6);
+		}
+		.markers-progress-bar {
+			background-color: green;
+		}
+	}
+	.progress-panel .progress, .markers-progress {
+		display: none;
+		width: 100%;
+	}
+	.progress-panel .progress-bar, .markers-progress-bar {
+		padding: 3px;
+		border: 1px solid white;
+		border-radius: 3px;
+		opacity: 0.75;
+		white-space: nowrap;
+	}
+	
+	.leaflet-popup-content-wrapper/*, .leaflet-popup-tip*/ {
+		&:active { background: #d9d9d9; }
+		cursor: pointer;
+    	background: #f7f7f8;
+    	box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 14px 0px;
+	}
+	.leaflet-popup-content {
+	    margin: 8px 13px;
+	    font-family: -apple-system, SF UI Text, Helvetica Neue, Helvetica, Arial, sans-serif;
+	    * { color: black; }
+    	.item-title {
+			font-size: 17px;
+		    font-weight: 500;
+			padding-right: 20px;
+		    background: no-repeat right center;
+			background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20viewBox%3D'0%200%2060%20120'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'm60%2061.5-38.25%2038.25-9.75-9.75%2029.25-28.5-29.25-28.5%209.75-9.75z'%20fill%3D'%23c7c7cc'%2F%3E%3C%2Fsvg%3E");
+		    background-size: 10px 20px;
+		    flex-shrink: 1;
+		    min-width: 0;
+		    white-space: nowrap;
+		    position: relative;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+		    max-width: 100%;
+    	}
+		
+		.item-subtitle { 
+			font-size: 13px; 
+		
+			a {
+				color: black; 
+				&:hover { text-decoration: underline; }
+			}
+			
+			&.coords {
+				font-size: 8pt;
+				color: silver;
+			}
+		}
+	}
+	.leaflet-popup-tip {
+		background-color: #f7f7f8;
+	}
+	
+	&:active .leaflet-popup-tip {
+		&:active { background: #d9d9d9; }
+	}
+	
+	.left-page-handle {
+		position:absolute;
+		left:0px;
+		top:70%;
+		height:20%;
+		width:75px;
+		border-radius: 25px;
+		background-color: transparent;/*rgba(0, 127, 255, 0.25);*/
+		z-index:3000;
+		
+		.inner {
+			position: absolute;
+			left: 20px; top:20px; bottom:20px; right:20px;
+			border-radius: 25px;
+			background-color: rgba(237, 237, 237, 0.75);
+			border: 1px solid rgba(10, 10, 10, 0.05);
+		}
+		
+		transition: 3s background-color;
+		
+		&.transparent {
+			background-color: transparent;
+			.inner { background-color: transparent; }
+		}
+
+	}
+	.leaflet-bar a, .leaflet-bar a:hover {
+		background-color: rgba(255, 255, 255, 0.95);
+	}
+	
+    .map {
+        width: 100%;
+        transition: width 250ms; 
+
+		&.mode-create { cursor: crosshair; }
+
+		.leaflet-bar, .leaflet-control-layers {
+			border: none;
+	    	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+		}
+		.leaflet-marker-icon.leaflet-marker-draggable {
+		    transition: margin-top 0.1s;
+		}
+		.awesome-marker {
+	        .marker-code {
+	            // background-color: rgb(54,165,215);
+	            margin-top: 2px;
+	            font-size: 7pt;
+	            font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	        }
+		}
+    }
+    &:not(.fullscreen) .leaflet-top {  top: 64px;  }
+    &:not(.fullscreen) .map.desktop .leaflet-top { top: 44px; }
+    &:not(.fullscreen) .leaflet-bottom { bottom: 44px; }
+	    
+    .leaflet-control-locate { display: none; }
+    .leaflet-bar .fa {  line-height: 26px; }
+    .leaflet-top {  
+        top: 20px;
+        -webkit-transition: top 0.5s; /* Safari */
+        transition: top 0.5s;
+    }
+    .desktop .leaflet-top { top: 0; }
+    .leaflet-bottom { 
+        -webkit-transition: bottom 0.5s; /* Safari */
+        transition: bottom 0.5s;
+    }
+    .toolbar span.info { text-align: center; font-size: 9pt; }
+}
+
 
 /* mapkit */
 .mk-logo-control { display: none; }
@@ -158,10 +490,10 @@ body.ios { background-color: black; background: black; }
 .swipe-handle {
 	position:absolute;
 	width: 50px;
-	top:70%; height:20%; 
+	top:60%; height:20%; 
 
 	&.left { left:0px; }
-	&.right { right:0px; .inner { opacity: 0; }}
+	&.right { right:0px; .inner { opacity: 1; }}
 	
 	z-index:6000;
 	

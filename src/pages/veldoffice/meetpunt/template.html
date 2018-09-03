@@ -1,0 +1,155 @@
+<div class="page">
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="left sliding">
+	        	<a class="back link"><i class="icon icon-back"></i><span class=""></span></a>
+	    	</div>
+	        <div class="center title sliding">{{l "Meetpunt.title"}}</div>
+	        <div class="right"></div>
+	    </div>
+	</div>
+	<div class="toolbar tabbar hide-when-page-loading"><div class="toolbar-inner">
+        <a href="#tab-meetpunt-info" class="tab-link tab-link-active"><i class="fa fa-info-circle"></i></a>
+        <a href="#tab-meetpunt-attributes" class="tab-link"><i class="fa fa-database"></i></a>
+        <a href="#tab-meetpunt-photos" class="tab-link"><i class="fa fa-camera"></i></a>
+        <!--<a href="#tab-docs" class="tab-link"><i class="fa fa-files-o"></i></a>-->
+    </div></div>
+	<div class="page-content ptr-content">
+	    <div class="ptr-preloader">
+			<div class="preloader"></div>
+			<div class="ptr-arrow"></div>
+	    </div>
+	    <!--<div class="tabs-swipeable-wrap">-->
+		<div class="list tabs">
+			<div id="tab-meetpunt-info" class="tab tab-active">
+				<div class="center">
+					<div class="subtitle bold">{{code}}</div>
+				</div>
+
+			</div>
+			<div id="tab-meetpunt-attributes" class="tab">
+				<div class="block-title">{{l "Meetpunt.title"}}</div>
+				<div class="list list-attributes"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-code.label"}}</div>
+							<div class="item-after">{{code}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-type.label"}}</div>
+							<div class="item-after">{{typeNaam}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-datum.label"}}</div>
+							<div class="item-after">{{datum}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+				<div class="block-title">{{l "Meetpunt-maaiveld.title"}}</div>
+				<div class="list-block item-after-shrink"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-maaiveld-type.label"}}</div>
+							<div class="item-after">{{maaiveldTypeNaam}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-maaiveld-hoogte.label"}}</div>
+							<div class="item-after">{{maaiveldHoogte}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-maaiveld-referentievlak.label"}}</div>
+							<div class="item-after">{{maaiveldReferentievlakNaam}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+				<div class="block-title">{{l "Meetpunt-grondwaterstand.title"}}</div>
+				<div class="list-block item-after-shrink"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-gws.label"}}</div>
+							<div class="item-after">{{gws}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-glg.label"}}</div>
+							<div class="item-after">{{glg}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-ghg.label"}}</div>
+							<div class="item-after">{{ghg}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+				<div class="block-title">{{l "Meetpunt-locatie.title"}}</div>
+				<div class="list-block item-after-shrink"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-locatie-x.label"}}</div>
+							<div class="item-after">{{locationRdX}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-locatie-y.label"}}</div>
+							<div class="item-after">{{locationRdY}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-locatie-latitude.label"}}</div>
+							<div class="item-after">{{locationLatitude}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-locatie-longitude.label"}}</div>
+							<div class="item-after">{{locationLongitude}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-locatie-accuracy.label"}}</div>
+							<div class="item-after">{{locationAccuracy}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+				<div class="block-title">{{l "Meetpunt-sleuf.title"}}</div>
+				<div class="list-block item-after-shrink"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-sleuf-lengte.label"}}</div>
+							<div class="item-after">{{sleufLengte}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-sleuf-breedte.label"}}</div>
+							<div class="item-after">{{sleufBreedte}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Meetpunt-sleuf-hoek.label"}}</div>
+							<div class="item-after">{{sleufHoek}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+			</div>
+			<div id="tab-meetpunt-photos" class="tab">
+				<div class="photos"></div>
+			</div>
+			<!--</div>-->
+		</div>
+	</div>
+</div>

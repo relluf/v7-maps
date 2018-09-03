@@ -1,12 +1,20 @@
 define(function(require) {
 	
-	require("stylesheet!node_modules/font-awesome/css/font-awesome.css");
+	// require("stylesheet!node_modules/font-awesome/css/font-awesome.css");
 	require("stylesheet!pages/styles.less");
 	require("app/hotkeys");
+	
+	require("leaflet");
+	require("pouchdb");
+	require("moment");
+	require("blocks-js");
+	require("font-awesome");
 
 	var Framework7 = require("framework7");
 	var Session = require("veldoffice/Session");
 	var EM = require("veldoffice/EM");
+	var V7 = require("V7");
+	
 	var Deferred = require("js/Deferred");
 	var js = require("js");
 	var on = require("on");
@@ -30,7 +38,15 @@ define(function(require) {
 	            d.errback(err);
 	        }
 	    ]);
+	    return d;
 	}
+
+	window.EM = EM;
+	window.Session = Session;
+	window.$ = $;
+	window.$$ = Dom7;
+	window.req = req;
+	window.V7 = V7;
 
 	/* Make life easier */
 	var qsa = Element.prototype.querySelectorAll;
@@ -78,82 +94,15 @@ define(function(require) {
 			f.apply(this, arguments);
 		});
 	};
-
-	Template7.registerHelper("l", function (str) {
-		// locale() helper
-		if(arguments.length > 1) {
-			str = js.copy_args(arguments);
-			
-			if(str[0] !== ">") {
-				str.pop();
-				str = str.join("");
-			} else {
-				str.shift(); // [thisObj, entity, factory, options]
-				var f = window.locale(String.format("%s.factories/%s", str[1], str[2]));
-				if(typeof f === "function") {
-					return f.apply(str[0], [str[1], str[2], str[3]]);
-				}
-			}
+	Element.prototype.bindAll = function(bindings) {
+		var f, name, target = this;
+		for(var selector in bindings) {
+			f = bindings[selector];
+			selector = selector.split(" ");
+			name = selector.pop();
+			$(selector.join(" ") || target, target).on(name, f);
 		}
-		
-	    if (typeof str === "function") str = str.call(this);
-	    
-	    if(typeof window.locale === "function") {
-	    	return window.locale(str);
-	    }
-	    
-	    return str;
-    });
-    Template7.registerHelper("e", function(context, options) {
-    	// escapeHtml() helper
-    	var joined;
-		if(arguments.length > 1) {
-			context = js.copy_args(arguments);
-			options = context.pop();
-			joined = context = context.join(".");
-		    context = js.get(context);
-		} else {
-	    	if (typeof context === "function") context = context.call(this);
-		}
-
-		return String.escapeHtml(options.fn(context));
-    });
-    Template7.registerHelper("w", function(context, options) {
-    	// with() helper
-    	var joined;
-		if(arguments.length > 1) {
-			context = js.copy_args(arguments);
-			options = context.pop();
-			joined = context = context.join("");
-			try {
-		    	context = eval(context);
-		    } catch(e) {
-		    	context = js.get(context);
-		    }
-		}
-		
-    	if (typeof context === "function") context = context.call(this);
-
-		return options.fn(context);
-    });
-    Template7.registerHelper("wjs", function(expression, options) {
-    	// withjs() helper
-        if (typeof expression === "function") { expression = expression.call(this); }
-    	
-        // 'with': function (context, options) {
-        //     if (isFunction(context)) { context = context.call(this); }
-        //     return options.fn(context);
-        // },
-        
-        var func;
-        if (expression.indexOf('return')>=0) {
-            func = '(function(){'+expression+'})';
-        }
-        else {
-            func = '(function(){return ('+expression+')})';
-        }
-        return options.fn(eval.call(this, func).call(this));
-    });
+	};
 
 	var app = new Framework7({
 		root: "#app",
@@ -162,49 +111,34 @@ define(function(require) {
 		routes: routes,
 		theme: "ios"
 	});    	
-	var mainView = app.views.create(".view-main");
-	var leftView = app.views.create(".view-left");
+	var mainView = app.views.main;
+	var leftView = app.views.left = app.views.create(".view-left", { url: "/menu" });
 
-	mainView.router.navigate("/map", { animate: false });
-
-	window.Session = Session;
 	window.f7a = app;
-	window.$ = $;
-	window.req = req;
+	mainView.router.navigate("/map", { animate: false });
+	// leftView.router.navigate("/menu", { animate: false });
+	
 
 	if(window.location.toString().endsWith("cordova")) {
 		require(["script!../../v7-cordova/cordova.js"]);
-		app.statusbar.hide();
 	}
-
-	Session.refresh().then(function() {
-		// initialize left when session info is available
-		Session.info().then(function() {
-			leftView.router.navigate("/menu", { animate: false });
-		});
 	
-		if(!Session.isAuthenticated()) {
-			var user = localStorage.getItem("services.veldoffice.user");
-			var pass = localStorage.getItem("services.veldoffice.password");
-			
-			if(user && pass) {
-				Session.login(user, pass).then(function() {
-					if(!Session.isAuthenticated()) {
-						mainView.router.navigate("/login");
-					} else {
-						Session.info().then(_ => {
-							console.log("info", _);	
-						});
-					}
-				});
-			} else {
-				mainView.router.navigate("/login");
-			}
-		} else {
-			Session.info().then(_ => {
-				leftView.router.navigate("/session", { animate: false });
-			});
+	app.panel.left.on("open", function() { localStorage.setItem("left-panel-opened", true ) });
+	app.panel.left.on("close", function() { localStorage.setItem("left-panel-opened", false)});
+	if(localStorage.getItem("left-panel-opened") === "true") {
+		app.panel.left.open(false);
+	}
+	app.statusbar.hide();
+	
+	// initialize left when session info is available
+	Session.info().then(function() {
+		if(leftView.router.currentRoute.path === "/menu") {
+			leftView.router.refreshPage();
 		}
+	});
+		
+	Session.refresh().then(function() {
+		V7.sessionNeeded();
 	});
 
 	// leftView.router.navigate("/session", { animate: false });

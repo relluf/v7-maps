@@ -11,13 +11,15 @@
   "dependencies": {
     "backbone": "^1.3.3",
     "cavalion-blocks": "^0.8.2",
-    "cavalion-js": "^1.0.5",
+    "cavalion-js": "^1.0.6",
     "cavalion-vcl": "^1.0.10",
+    "convexhull-js": "^1.0.0",
     "font-awesome": "^4.7.0",
     "framework7": "^3.1.1",
+    "framework7-icons": "^0.9.1",
     "framework7-plugin-3d-panels": "^2.0.0",
     "jquery": "^3.3.1",
-    "pouchdb-browser": "^7.0.0",
+    "moment": "^2.22.2",
     "requirejs": "^2.3.5"
   }
 }

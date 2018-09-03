@@ -1,28 +1,33 @@
-<li data-key="{{id}}" class="{{classes}}"><a class="item-link item-content item-onderzoek"> 
+<li data-key="{{id}}" class="{{l '>' this 'Onderzoek' 'classes'}}"><a href="/veldoffice/onderzoek?key={{id}}" class="item-link item-content item-onderzoek"> 
 	<!--<div class="item-media"><img src="https://cdn0.iconfinder.com/data/icons/industrial-circle/512/hatch_polygon-512.png" width="44"></div>-->
 	<div class="item-inner"> 
 		<div class="item-title-row"> 
-			<div class="item-title">{{naam}}&nbsp;</div> 
-			<span class="item-ago">{{ago}}</span> 
-		</div> 
-		<div class="item-subtitle">{{projectcode}} - {{bedrijf}}</div>
+			<div class="item-subtitle">{{projectcode}}</div>
+			<span class="item-ago">{{modified_moment}}</span> 
+		</div>
+		<div class="item-title">{{naam}}&nbsp;</div> 
 		<div class="item-text">
-			<div><span>{{methode}}</span><div class="chip {{status.id}}"><div class="chip-label">{{status.name}}</div></div>
+			<div>
+				<span class="chip methode">{{methode}}</span>
+				<div class="chip {{status.id}}"><div class="chip-label">{{status.name}}</div></div>
+				{{#if count_meetpunten_with_coords}}<div class="chip show-on-map"><div class="chip-label">{{l "Onderzoek-contour/Map.short"}}</div></div>{{/if}}
 			</div>
 			<div class="item-summary">
 				<span title="{{count_fotos}} foto's">
 					<i class="fa fa-camera"></i> {{count_fotos}}
 				</span>
 				<span title="{{count_meetpunten}} meetpunten">
-					<i class="fa fa-dot-circle-o"></i> {{count_valid_meetpunten}} / {{count_meetpunten}}
+					<i class="fa fa-dot-circle-o"></i>{{#if count_meetpunten_with_coords}} {{count_meetpunten_with_coords}} /{{/if}} {{count_meetpunten}}
+					<span style="color:silver; font-size:9pt;"> - {{bedrijf_naam}}</span>
 				</span>
+				
+<!--
 				<span title="{{count_labopdrachten}} labopdrachten">
 					<i class="fa fa-flask"></i> {{count_labopdrachten}}
 				</span>
 				<span title="? documenten">
 					<i class="fa fa-files-o"></i> ?{{count_documenten}}
 				</span>
-<!--
 				<span title="0 extra kaarten">
 					<i class="fa fa-map-o"></i> 0
 				</span>

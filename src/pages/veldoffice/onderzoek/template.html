@@ -1,0 +1,189 @@
+<div class="page investigation" data-key="{{id}}">
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="left sliding">
+	        	<a class="back link"><i class="icon icon-back"></i><span class="">Onderzoeken</span></a>
+	    	</div>
+	        <div class="center sliding title">{{l "Onderzoek.title"}}</div>
+	        <!--<div class="right sliding">-->
+	        <!--    <a class="link"><i class="f7-icons">share</i>&nbsp;</a>-->
+	        <!--</div>-->
+	    </div>
+	</div>
+	<div class="toolbar tabbar hide-when-page-loading"><div class="toolbar-inner">
+        <a href="#tab-investigation-info" class="tab-link tab-link-active"><i class="fa fa-info-circle"></i></a>
+        <a href="#tab-investigation-attributes" class="tab-link"><i class="fa fa-database"></i></a>
+        <a href="#tab-investigation-photos" class="tab-link"><i class="fa fa-camera"></i></a>
+        <!--<a href="#tab-docs" class="tab-link"><i class="fa fa-files-o"></i></a>-->
+    </div></div>
+	<div class="page-content ptr-content">
+	    <div class="ptr-preloader">
+			<div class="preloader"></div>
+			<div class="ptr-arrow"></div>
+	    </div>
+	    <!--<div class="tabs-swipeable-wrap">-->
+		<div class="list tabs">
+			<div id="tab-investigation-info" class="tab tab-active">
+				<div class="center">
+					<div class="subtitle bold">{{naam}}</div>
+					<div class="subtitle">{{projectcode}}</div>
+					<p>&nbsp;{{#if bedrijf}}{{bedrijf.naam}}{{/if}}&nbsp;</p>
+				</div>
+				<div class="button-block">
+					<a class="button button-big button-round button-fill flex2"><i class="fa fa-anchor"></i></a>
+					<a class="button button-big button-round button-forward show-on-map flex5">{{l "Onderzoek-contour/Map"}}<i class="icon icon-forward"></i></a>
+					<!--<a class="button button-big button-round button-forward edit-contour flex1">{{l "Onderzoek-contour/Edit"}}<i class="icon icon-forward"></i></a>-->
+				</div>
+				<div class="block center hide-when-page-not-loading">
+					<div class="preloader infinite-scroll-preloader"></div>
+				</div>
+				
+				{{#if meetpunten}}
+				<div class="collections list accordion-list item-after-shrink"><ul>
+					<li class="accordion-item">
+						<a class="item-content item-link">
+							<div class="item-media">
+								<!--<i class="fa fa-fw fa-user-circle menu-icon bg-orange "></i>-->
+							</div>
+							<div class="item-inner">
+								<div class="item-title-row">
+									<div class="item-title">{{l "Onderzoek-meetpunten.label"}}</div>
+								</div>
+								<div class="item-after">{{js "this.meetpunten.length"}}</div>
+							</div>
+						</a>
+						<div class="accordion-item-content">
+							<div class="list-block media-list"><ul>
+								{{#each meetpunten}}
+								<li><a href="/veldoffice/meetpunt?key={{id}}" class="item-content item-link">
+									<div class="item-media">
+										<i class="fa fa-fw fa-user-circle menu-icon bg-orange" style="opacity:0;"></i>
+									</div>
+									<div class="item-inner">
+										<div class="item-title-row">
+											<div class="item-title">{{code}}</div>
+											<div class="item-after">{{#if type}}{{type.naam}}{{/if}}</div>
+										</div>
+										<div class="item-subtitle">{{datum}} - {{#if situatiebeschrijving}}{{situatiebeschrijving.naam}}{{/if}}</div>
+									</div>
+								</a></li>
+								{{/each}}
+							</ul></div>
+						</div>
+					</li>
+					{{#if x}}
+					<li class="accordion-item">
+						{{#wjs "V7.properties.watermonsters(this)"}}
+						<a href="#" class="item-content item-link">
+							<div class="item-media">
+								<!--<i class="fa fa-fw fa-user-circle menu-icon bg-orange "></i>-->
+							</div>
+							<div class="item-inner">
+								<div class="item-title-row">
+									<div class="item-title">{{l "Onderzoek-watermonsters.label"}}</div>
+								</div>
+								<div class="item-after">{{length}}</div>
+							</div>
+						</a>
+						<div class="accordion-item-content">
+							<div class="list-block media-list"><ul>
+								{{#each this}}
+								<li><a data-page="Watermonster?key={{id}}" class="item-content item-link">
+									<div class="item-media">
+										<i class="fa fa-fw fa-user-circle menu-icon bg-orange" style="opacity:0;"></i>
+									</div>
+									<div class="item-inner">
+										<div class="item-title-row">
+											<div class="item-title">{{l ">" this "Veldmonster" "title"}}</div>
+											<div class="item-after">{{datum}}</div>
+										</div>
+										<div class="item-subtitle">Here{{#if matrix}}{{matrix.naam}}!!!{{/if}}</div>
+									</div>
+								</a></li>
+								{{/each}}
+							</ul></div>
+						</div>
+						{{/wjs}}
+					</li>
+					{{/if}}
+				</ul></div>
+				{{/if}}
+			</div>
+			<div id="tab-investigation-attributes" class="tab">
+				<div class="block-title">{{l "Onderzoek.title"}}</div>
+				<div class="list list-attributes"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-naam.label"}}</div>
+							<div class="item-after">{{naam}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-classificatie.label"}}</div>
+							<div class="item-after">{{methode}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-status.label"}}</div>
+							<div class="item-after">{{status-name}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-opmerking.label"}}</div>
+							<div class="item-after">{{opmerking}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-conclusie.label"}}</div>
+							<div class="item-after">{{conclusie}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+				<div class="block-title">{{l "Project.title"}}</div>
+				<div class="list list-attributes"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-projectcode.label"}}</div>
+							<div class="item-after">{{projectcode}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-projectleider.label"}}</div>
+							<div class="item-after">{{projectleider}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-projectperiode.label"}}</div>
+							<div class="item-after">{{projectperiode}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+				<div class="block-title">{{l "Locatie.title"}}</div>
+				<div class="list list-attributes"><ul>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-locatie.label"}}</div>
+							<div class="item-after">{{locatie}}</div>
+						</div>
+					</a></li>
+					<li><a class="item-link item-content">
+						<div class="item-inner">
+							<div class="item-title">{{l "Onderzoek-adres.label"}}</div>
+							<div class="item-after">{{adres}}</div>
+						</div>
+					</a></li>
+				</ul></div>
+			</div>
+			<div id="tab-investigation-photos" class="tab">
+				<div class="photos"></div>
+			</div>
+			<!--</div>-->
+		</div>
+	</div>
+</div>

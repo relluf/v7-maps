@@ -1,27 +1,56 @@
-require.config({
-	paths: {
-		"jquery": "./node_modules/jquery/dist/jquery",
-        "less": "bower_components/less/dist/less",
+require.config({ paths: {
+	"backbone": "node_modules/backbone/backbone",
+	"underscore": "node_modules/underscore/underscore",
+    "pouchdb": "bower_components/pouchdb/dist/pouchdb",
+    // "argsarray": "node_modules/argsarray/index",
+	"jquery": "node_modules/jquery/dist/jquery",
+    "less": "bower_components/less/dist/less",
+    "moment": "node_modules/moment",
 
-		"text": "./node_modules/cavalion-js/src/text",
-		"stylesheet": "./node_modules/cavalion-js/src/stylesheet",
-		"script": "./node_modules/cavalion-js/src/script",
+	"text": "node_modules/cavalion-js/src/text",
+	"stylesheet": "node_modules/cavalion-js/src/stylesheet",
+	"script": "node_modules/cavalion-js/src/script",
 
-		"js": "./node_modules/cavalion-js/src/js",
-		"on": "./node_modules/cavalion-js/src/on",
-		"data": "./node_modules/cavalion-js/src/data",
-		"util": "./node_modules/cavalion-js/src/util",
-		"locale": "./node_modules/cavalion-js/src/locale",
+	"js": "node_modules/cavalion-js/src/js",
+	"on": "node_modules/cavalion-js/src/on",
+	"data": "node_modules/cavalion-js/src/data",
+	"util": "node_modules/cavalion-js/src/util",
+	"locale": "node_modules/cavalion-js/src/locale",
 
-		"entities": "./node_modules/cavalion-js/src/entities",
-		"vcl": "./node_modules/cavalion-vcl/src/",
-		"vcl/veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice/vcl-veldoffice",
-		"blocks": "./node_modules/cavalion-blocks/src/",
-		
-		"veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice"
-	}
+	"entities": "node_modules/cavalion-js/src/entities",
+	"vcl": "node_modules/cavalion-vcl/src/",
+	"blocks": "node_modules/cavalion-blocks/src/",
+	
+	/* veldapps.com */		
+	"veldapps": "../lib/veldoffice-js/src/veldapps.com",
+	"veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice",
+	"vcl/veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice/vcl-veldoffice",
+	/*- veldoffice/3rd party */
+	"proj4": "../lib/veldoffice-js/src/proj4js.org/proj4-src",
+	"epsg": "../lib/veldoffice-js/src/proj4js.org/epsg",
+	"leaflet": "../lib/veldoffice-js/src/leafletjs.com"
+
+}});
+
+define("app/hotkeys", ["util/HotkeyManager"], function(HKM) {
+
+	/* toggle-menu */
+	HKM.register("Escape", {
+		type: "keydown",
+		callback: function(e) {
+			if(f7a.panel.left.opened) {
+				f7a.panel.left.close();
+			} else {
+				f7a.panel.left.open();
+			}
+		}
+	});
+
 });
-
+define("moment", ["moment/moment", "moment/locale/nl"], function(moment) {
+	moment.locale("nl");
+	return moment;
+});
 define("framework7/plugins/auto-back-title", function() {
 	
 	var selectors = {
@@ -51,7 +80,7 @@ define("framework7/plugins/auto-back-title", function() {
 });
 define("framework7/plugins/esc-is-back", ["Element"], function() {  // Element?
 	var selectors = {
-		back: ".view-main .navbar .navbar-current .left a.back.link",
+		back: ".view-left .navbar .navbar-current .left a.back.link",
 	};
 	document.addEventListener("keyup", function(e) {
 		if(e.keyCode === 27) {
@@ -63,85 +92,137 @@ define("framework7/plugins/esc-is-back", ["Element"], function() {  // Element?
 	});
 	return selectors;
 });
-
-
 define("framework7", function(require) { 
-	var Framework7 = require("./node_modules/framework7/js/framework7");
-	var Panels = require("./node_modules/framework7-plugin-3d-panels/dist/framework7.3dpanels");
+	var Framework7 = require("node_modules/framework7/js/framework7");
+	var Panels = require("node_modules/framework7-plugin-3d-panels/dist/framework7.3dpanels");
 	
 	require("framework7/plugins/auto-back-title");
-	require("stylesheet!./node_modules/framework7/css/framework7.min.css");
+	require("stylesheet!node_modules/framework7/css/framework7.min.css");
+	require("stylesheet!node_modules/framework7-icons/css/framework7-icons.css");
 	Framework7.use(Panels);
 
 	return Framework7; 
 });
-define("mapkit/map", [], function() {
-	mapkit.init({ authorizationCallback: function(done) {
-		done("eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhTM1oyMjdUTEsifQ.eyJpc3MiOiI2MlZLOUVINVVQIiwiaWF0IjoxNTM0MjEyMTQ2LjQzOCwiZXhwIjoxNjkyMDAwMTQ2LjQzOH0.cL-E0os0Oql6pT2ERvxFcT7v9byqfQYPEBcMqv0uQAgVfwGLqAq2x1pZ5Sc0zS9QDXJxgLTIz42wrZ9fe8oblQ");
-	}});
-	
-	let map = new mapkit.Map("map", { center: new mapkit.Coordinate(37.32, -121.88) });
-	map.showUserLocationControl = true;
-	map.showsScale = true;//mapkit.FeatureVisibility.Visible;
-	map.tintColor = "#123456";
-	map.language = "du-NL";
-	
-	map.isZoomEnabled = true;
-	map.isScrollEnabled = true;
-	map.isRotationEnabled = true;
-	
-	map.showsMapTypeControl = true;
-	map.showsUserLocationControl = true;
-	map.showsUserLocation = true;
+define("template7", ["framework7"], function() {
 
-	// let marker = new mapkit.MarkerAnnotation(map.center, {
- //       draggable: true,
- //       selected: true,
- //       title: "Plaats mij",
- //       subtitle: "Meetpunt locatie"
- //   });
-    
- //   map.addAnnotation(marker);
-	
-	return map;
-});
-define("app/hotkeys", ["util/HotkeyManager"], function(HKM) {
-
-	/* toggle-menu */
-	HKM.register("Escape", {
-		type: "keydown",
-		callback: function(e) {
-			if(f7a.panel.left.opened) {
-				f7a.panel.left.close();
+	Template7.registerHelper("l", function (str) {
+		// locale() helper
+		if(arguments.length > 1) {
+			str = js.copy_args(arguments);
+			
+			if(str[0] !== ">") {
+				str.pop();
+				str = str.join("");
 			} else {
-				f7a.panel.left.open();
+				str.shift(); // [thisObj, entity, factory, options]
+				var f = window.locale(String.format("%s.factories/%s", str[1], str[2]));
+				if(typeof f === "function") {
+					return f.apply(str[0], [str[1], str[2], str[3]]);
+				}
+				console.warn("Factory " + str[2] + " not registered for " + str[1]);
 			}
 		}
-	});
+		
+	    if (typeof str === "function") str = str.call(this);
+	    
+	    if(typeof window.locale === "function") {
+	    	return window.locale(str);
+	    }
+	    
+	    return str;
+    });
+    Template7.registerHelper("e", function(context, options) {
+    	// escapeHtml() helper
+    	var joined;
+		if(arguments.length > 1) {
+			context = js.copy_args(arguments);
+			options = context.pop();
+			joined = context = context.join(".");
+		    context = js.get(context);
+		} else {
+	    	if (typeof context === "function") context = context.call(this);
+		}
 
+		return String.escapeHtml(options.fn(context));
+    });
+    Template7.registerHelper("w", function(context, options) {
+    	// with() helper
+    	var joined;
+		if(arguments.length > 1) {
+			context = js.copy_args(arguments);
+			options = context.pop();
+			joined = context = context.join("");
+			try {
+		    	context = eval(context);
+		    } catch(e) {
+		    	context = js.get(context);
+		    }
+		}
+		
+    	if (typeof context === "function") context = context.call(this);
+
+		return options.fn(context);
+    });
+    Template7.registerHelper("wjs", function(expression, options) {
+    	// withjs() helper
+        if (typeof expression === "function") { expression = expression.call(this); }
+    	
+        // 'with': function (context, options) {
+        //     if (isFunction(context)) { context = context.call(this); }
+        //     return options.fn(context);
+        // },
+        
+        var func;
+        if (expression.indexOf('return')>=0) {
+            func = '(function(){'+expression+'})';
+        }
+        else {
+            func = '(function(){return ('+expression+')})';
+        }
+        return options.fn(eval.call(this, func).call(this));
+    });
+
+	return {
+		load: function(name, parentRequire, load, config) {
+			/** @see http://requirejs.org/docs/plugins.html#apiload */
+			parentRequire(["text!" + name], function(source) {
+				load(Template7.compile(source));
+			});
+		}
+	};
 });
 
-window.locale_base = "locales/";
-require(["on", "locale!en-US", "locale!du-NL"], function() {
+define("font-awesome", ["stylesheet!node_modules/font-awesome/css/font-awesome.css"], function(fa) {
+	return fa;
+});
+
+define("leaflet", ["leaflet/leaflet-default"], function(leaflet) { return leaflet; });
+define("blocks-js", ["blocks/Blocks", "blocks/Factory"], function(Blocks, Factory) {
+	// TODO Refactor to blocks/Superblock?
+	define("vcl/Component-parentIsOwner", ["require", "js/defineClass", "vcl/Component"], function (require, ComponentPIO, Component) {
+		return (ComponentPIO = ComponentPIO(require, {
+			inherits: Component,
+			prototype: {
+				setParentComponent: function(value) {
+					this.setOwner(value);
+				}
+			}
+		}));
+	});	
+	return Blocks;
+});
+
+require(["moment", "moment/locale/nl", "locale!en-US", "locale!du-NL"], function(moment, nl) {
 	
+    moment.locale("nl");
 	locale.loc = "du-NL";
-	require(["framework7"], function(Framework7) {
+
+	require(["framework7", "leaflet"], function(Framework7, leaflet) {
 		
 		if(Framework7.device.iphoneX === true) {
 			document.documentElement.classList.add("iphonex");
 		}
 	
-		require(["main", "text!pages/investigations-template.html"]);
+		require(["main"]);
 	});
-});
-
-define("collections/Investigations", ["veldoffice/EM", "veldoffice/Session"], function() {
-	
-	return {
-	
-		getPage: function() {},
-		nextPage: function() {}
-		
-	};
-	
 });

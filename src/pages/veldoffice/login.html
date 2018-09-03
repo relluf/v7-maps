@@ -52,15 +52,16 @@
 	var Session = require("veldoffice/Session");
 
 	function load(page) {
-		var email = localStorage.getItem('veldoffice/Session.user') || "";
-		var password = localStorage.getItem('veldoffice/Session.password') || "";
+		var email = localStorage.getItem('services.veldoffice.user') || "";
+		var password = localStorage.getItem('services.veldoffice.password') || "";
 		$("input[name=user]")[0].value = email;
 		$("input[name=password]")[0].value = password;
 	}
 	
 	function save(user, password) {
-		localStorage.setItem("veldoffice/Session.user", user);
-		localStorage.setItem("veldoffice/Session.password", password);
+		localStorage.setItem("services.veldoffice.user", user);
+		localStorage.setItem("services.veldoffice.password", password);
+		localStorage.setItem("services.veldoffice.autologin", true);
 	}
 	
 	return { on: {
@@ -75,10 +76,11 @@
 				e.target.classList.add("loading");
 				Session.login(user, password).then(function(result) {
 					if(result.success === true) {
-						localStorage.setItem("veldoffice/Session.user", user);
-						localStorage.setItem("veldoffice/Session.password", password);
 						e.target.f7Page.router.back();
 						save(user, password);
+						setTimeout(function() {
+							V7.refreshMenu();
+						}, 750)
 					} else {
 						e.target.classList.remove("loading");
 						f7a.dialog.alert(result.message, locale("LoginFailure.title"));

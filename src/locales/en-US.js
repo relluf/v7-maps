@@ -35,6 +35,7 @@ define(function() { return {
 	"Statusbar":									"Statusbar Fix",
 	"Cancel":										".",
 	"Done": 										".",
+	"Scan":											".",
 	"Logout":										".",
 	"AreYouSureToLogout":							"You will be logged out and the application will restart. Do you want to continue?",
 	"Confirm":										".",
@@ -51,6 +52,15 @@ define(function() { return {
 	"Map-retina.switch":							"Use high resolutions maps",
 	
 	"Language":										".",
+	
+	"Anchor": {
+		"":											".",
+		".plural":									"Anchors"
+	},
+
+	"Scan": {
+			"/New.button":							"scan"
+	},
 	
 	"Onderzoek": {
 		"":											"Investigation",
@@ -70,12 +80,14 @@ define(function() { return {
 		"-contour": {
 			"":										"Contour",
 			"/Map":									"Show on Map",
+			"/Map.short":							"Map",
 			"/Edit":								"Edit Contour"
 		}
 	},
 	"Locatie": {
 		"":											"Location",
-		".plural":									"Locations"
+		".plural":									"Locations",
+		"/New.button":								"locatie"
 	},
 	"Project": {
 		"":											".",

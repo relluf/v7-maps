@@ -26,6 +26,7 @@ define(function() { return {
 	"Shortcuts":									"Snelinvoer",
 	"Soil_Water":									"Bodem en water",
 	
+	"OneMoment":									"(0) (0)",
 	"Back":											"Terug",
 	"Close":										"Sluiten",
 	"NothingFound":									"Niets gevonden",
@@ -53,11 +54,25 @@ define(function() { return {
 
 	"Language": 									"Taal",
 	
+	
+	"Veldoffice":									".",
+	"Investigation/New":							"onderzoek",
+	
+	"Anchor": {
+		"":											".",
+		".plural":									"Anchors"
+	},
+	
+	"Scan": {
+			"/New.button":							"scan"
+	},
+	
 	"Onderzoek": {
 		"":											".",
 	// ".title":									".",
 		".subtitle":								"Contouren van veldoffice.nl",
 		".plural":									"Onderzoeken",
+		".search-label":							"Alle onderzoeken, recent gewijzigde eerst. Middels het zoekveld hierboven kunt u de lijst filteren overeenkomstig de attributen naam, projectcode en/of bedrijf.",
 		"-naam.label":								"Naam",
 		"-status":									"Status",
 		"-opmerking":								"Opmerking",
@@ -84,13 +99,15 @@ define(function() { return {
 		"-contour": {
 			"":										"Contour",
 			"/Map":									"Toon op kaart",
+			"/Map.short":							"Kaart",
 			"/Edit":								"Wijzig contour"
 		}
 	},
 	"Locatie": {
 		"":											".",
 	// ".title":									".",
-		".plural":									"Locaties"
+		".plural":									"Locaties",
+		"/New.button":								"locatie"
 	},
 	"Project": {
 		"":											".",

@@ -1,0 +1,34 @@
+{
+    "baseUrl": "src/",
+    "paths": {
+	
+		"jquery": "./node_modules/jquery/dist/jquery",
+    	"less": "bower_components/less/dist/less",
+
+		"text": "./node_modules/cavalion-js/src/text",
+		"stylesheet": "./node_modules/cavalion-js/src/stylesheet",
+		"script": "./node_modules/cavalion-js/src/script",
+
+		"js": "./node_modules/cavalion-js/src/js",
+		"on": "./node_modules/cavalion-js/src/on",
+		"data": "./node_modules/cavalion-js/src/data",
+		"util": "./node_modules/cavalion-js/src/util",
+		"locale": "./node_modules/cavalion-js/src/locale",
+
+		"entities": "./node_modules/cavalion-js/src/entities",
+		"vcl": "./node_modules/cavalion-vcl/src/",
+		"blocks": "./node_modules/cavalion-blocks/src/",
+	
+		"vcl/veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice/vcl-veldoffice",
+		"veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice"
+		
+    }, 
+	"map": { },
+    "name": "index",
+    "out": "src/bundle.js",
+    "_optimizer": "uglify",
+    "uglify": {
+        "beatify": true
+    },
+    "include": []
+}
