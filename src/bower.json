@@ -12,6 +12,7 @@
     "tests"
   ],
   "dependencies": {
-    "less": "^3.8.1"
+    "less": "^3.8.1",
+    "pouchdb": "^7.0.0"
   }
 }

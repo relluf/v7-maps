@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apple-mapkit-js": "^6.0.1",
     "backbone": "^1.3.3",
     "cavalion-blocks": "^0.8.2",
     "cavalion-js": "^1.0.6",

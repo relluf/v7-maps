@@ -33,22 +33,22 @@ define(function(require) {
 	}
 
 	return {
-		on: {
-			pageInit(e) {
-				var onderzoek = EM.get("Onderzoek", this.$route.query.key);
-				getData(e, onderzoek);
-				
-				var ptr = e.target.qs(".ptr-content");
-				ptr.on("ptr:refresh", function(e) {
-					setTimeout(() => f7a.ptr.done(ptr), 1000);
-				});
-				
-				on(e.target.qsa(".show-on-map"), "click", function(e) {
-					V7.showOnMap("Onderzoek", onderzoek);
-					// TODO
-				});
-				
+		bindings: {
+			".ptr-content ptr:refresh": function(e) {
+				setTimeout(() => f7a.ptr.done(e.target), 1000);
+			},
+			".show-on-map click": function(e) {
+				var pageEl = e.target.up(".page");
+				var key = js.get("f7Page.route.query.key", pageEl);
+				V7.showOnMap("Onderzoek", EM.get("Onderzoek", key));
 			}
+		},
+		on: { 
+			pageInit(e) {
+				var key = js.get("detail.router.currentRoute.query.key", e);
+				var onderzoek = EM.get("Onderzoek", key);
+				getData(e, onderzoek);
+			} 
 		},
 		data: function() {
 			return EM.get("Onderzoek", this.$route.query.key);

@@ -28,10 +28,10 @@
 
 		<!--<div class="block-title">{{l "Shortcuts"}}</div>-->
 		<div class="button-block">
-			<a class="flex2"></a>
+			<!--<a class="flex2"></a>-->
 			<a href="" class="button button-big button-round button-new investigation flex4"><i class="fa fa-plus"></i>{{l "Investigation/New.button"}}</a>
 			<a href="" class="button button-big button-round button-new investigation flex4"><i class="fa fa-plus"></i>{{l "Meetpunt/New.button"}}</a>
-			<a class="flex2"></a>
+			<!--<a class="flex2"></a>-->
 		</div>		
 		<div class="button-block">
 			<a class="button button-big button-round button-new foto flex1">
@@ -40,8 +40,22 @@
 			<a href="" class="button button-big button-round button-new scan flex1"><i class="fa fa-plus"></i>{{l "Scan/New.button"}}</a>
 		</div>		
 		
-		<div class="block-title">{{l "Anchor.plural"}}</div>
-		<div class="list"><ul> {{#each anchors}} {{html}} {{/each}} </ul></div>
+		{{#if anchors.length}}
+		<div class="list"><ul> {{#each anchors}} {{l ">" this "Anchor" "menu-anchors-li"}} {{/each}} 
+		
+			<li><a href="/anchors" class="item-content item-link">
+				<!--<div class="item-media">-->
+				<!--	<i class="fa fa-fw fa-photo menu-icon bg-color-green "></i>-->
+				<!--</div>-->
+				<div class="item-inner">
+					<div class="item-title-row">
+						<div class="item-title">{{l "Anchor.plural"}}...</div>
+					</div>
+				</div>
+			</a></li>
+		</ul></div>
+		<div class="block-title display-none">{{l "Anchor.plural"}}</div>
+		{{/if}}
 
 		<div class="block-title">{{l "Veldoffice"}}</div>
 		<div class="list"><ul>

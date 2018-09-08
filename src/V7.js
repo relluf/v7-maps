@@ -1,23 +1,34 @@
 define(function(require) {
 	
-	var Browser = require("util/Browser");
-	var Wkt = require("leaflet/plugins/wicket");
-	var rd = require("leaflet/node_modules/leaflet-rd/src/index");
-	var convexHull = require("node_modules/convexhull-js/convexhull");
-
-	var onderzoek_popup_tmpl = require("template7!pages/veldoffice/onderzoek/map-popup-template.html");
-	var meetpunt_popup_tmpl = require("template7!pages/veldoffice/meetpunt/map-popup-template.html");
+	require("leaflet/node_modules/leaflet-rd/src/index");
 	
+	var Browser = require("util/Browser");
+	var Hash = require("util/Hash");
+	var Wkt = require("leaflet/plugins/wicket");
+	var convexHull = require("node_modules/convexhull-js/convexhull");
 	var MeetpuntMarker = require("veldoffice/Meetpunt/leaflet/Marker");
+	var PouchDB = require("pouchdb");
 	var moment = require("moment");
 	var on = require("on");
 
-	var PouchDB = require("pouchdb");
-	
+	var onderzoek_popup_tmpl = require("template7!pages/veldoffice/onderzoek/map-popup-template.html");
+	var meetpunt_popup_tmpl = require("template7!pages/veldoffice/meetpunt/map-popup-template.html");
+
 	require("leaflet/plugins/locate");
 	
-	var features = [];
-	var layerGroups = [];
+	var v7_objects = new PouchDB("v7-objects");
+	var v7_objects_timeouts = {};
+	var v7_objects_idx = {};
+	
+	function calcHash(object) {
+		var hash = {};
+		for(var k in object) {
+			if(k.charAt(0) !== "_" && k.endsWith("_") === false) {
+				hash[k] = object[k];
+			}
+		}
+		return Hash.md5(JSON.stringify(hash));
+	}
 
 	return {
 		locale: {},	
@@ -26,8 +37,100 @@ define(function(require) {
 				
 			}
 		},
+		
+		// Small wrapper around pouch'd objects
+		objects: {
+			idx: v7_objects_idx,
+			db: v7_objects,
+			get: function(id) {
+				// Always returns the same JavaScript object
+				if(v7_objects_idx[id] instanceof Promise) {
+					return v7_objects_idx[id].$object;
+				}
+				return v7_objects_idx[id] || this.fetch(id).$object;
+			},
+			fetch: function(id) {
+				// Returns a Promise which will resolve when id is refreshed
+				if(v7_objects_idx[id] instanceof Promise) {
+					// console.log("V7.objects.fetch", id, "already fetching");
+					return v7_objects_idx[id];
+				}
+				
+				var object = v7_objects_idx[id];
+				if(object === undefined) {
+					// console.log("V7.objects.fetch", id, "created");
+					object = (v7_objects_idx[id] = {_id: id});
+				}
+				var r = (v7_objects_idx[id] = new Promise(function(resolve, reject) {
+					v7_objects.get(id, function(err, obj) {
+						js.mixIn(object, obj);
+						if(v7_objects_idx[id] instanceof Promise) {
+							v7_objects_idx[id] = object;
+						}
+						resolve(object);
+						delete r.$object;
+					});
+				}));
+				r.$object = object;
+				return r;
+			},
+			refresh: function(object) {
+				if(V7.objects.get(object._id) !== object) {
+					throw new Error("Object not managed");
+				}
+				
+				return V7.objects.fetch(object._id);
+			},
+			// set: function(id, value) {
+			// 	if(!value) value = v7_objects_idx[id];
+			// 	if(!value._id) value._id = id;
+				
+			// 	var current_value = v7_objects_idx[id];
+			// 	v7_objects_idx[id] = value;
+			// 	return v7_objects.put(v7_objects_idx[id], function(err, result) {
+			// 		if(err) throw err;
+			// 		return result;
+			// 	});
+			// },
+			save: function(object, options) {
+				if(V7.objects.get(object._id) !== object) {
+					throw new Error("Object not managed");
+				}
+				
+				if(options === undefined) options = { delay: 250 };
+				
+				if(!isNaN(parseInt(options.delay, 10))) {
+					return new Promise(function(resolve, reject) {
+						if(v7_objects_timeouts[object._id]) {
+							clearTimeout(v7_objects_timeouts[object._id]);
+						}
+						v7_objects_timeouts[object._id] = setTimeout(function() {
+							delete v7_objects_timeouts[object._id];
+							V7.objects.save(object, { delay: false }).then(resolve).catch(reject);
+						}, options.delay);
+					});
+				}
 
-		objects: new PouchDB("v7-objects"),
+				var hash = calcHash(object);
+				if(object.hash_ !== hash) {
+					object.hash_ = hash;
+					console.log("V7.objects.save", object._id, object);
+					return new Promise(function(resolve, reject) {
+						v7_objects.put(object, function(err, result) {
+							if(err) reject(err);
+							if(result && result.ok === true) {
+								object._rev = result.rev;
+							}
+							resolve(object);
+						});
+					});
+				} else {
+					console.log("V7.objects.save", object._id, "hash equals");
+				}
+				
+				return Promise.resolve(object);
+			}
+		},
 		session: {},
 		entities: {
 			get: function(entity, key) {
@@ -37,11 +140,19 @@ define(function(require) {
 			query: function(entity, attributes, criteria) {
 				
 			}
-		},		// server, memory (EM)
+		},
 		router: {
 			navigate: function() {},
-			refresh: function() {}
-		},			// screen
+			refresh: function(path) {
+				// Refreshes -path- in all views
+				["main", "left"/*, "detail"*/].forEach(function(view) {
+					var router = f7a.views[view].router;
+					if(router.currentRoute.path === path) {
+						router.refreshPage();
+					}
+				});
+			}
+		},
 		
 		util: {
 			nextTick: function() {}
@@ -240,7 +351,6 @@ define(function(require) {
 		    }
 		},
 
-
 	//	General Routing
 		navigate: function(view, path, opts) {
 			var router = f7a.views[view].router;
@@ -253,13 +363,7 @@ define(function(require) {
 			}
 		},
 		refreshPage: function(path) {
-			// Refreshes -path- in all views
-			["main", "left"/*, "detail"*/].forEach(function(view) {
-				var router = f7a.views[view].router;
-				if(router.currentRoute.path === path) {
-					router.refreshPage();
-				}
-			});
+			return V7.router.refresh(path);
 		},
 		refreshMenu: function() {
 			return V7.refreshPage("/menu");
@@ -382,7 +486,6 @@ define(function(require) {
 	    	return this.map$.mapOnderzoek(onderzoek);
 	    }
 	};
-	
 });
 
 // function camera_stuff() {
@@ -554,19 +657,3 @@ define(function(require) {
 //                         }
 //                     }
 //                 }
-// define(function(require) {
-
-// 	var PouchDB = require("pouchdb");	
-// 	var db = new PouchDB("v7-store");
-	
-// 	return {
-		
-// 		get: function(id) {
-			
-// 			return db.get(id).then(function() {
-				
-// 			});
-// 		}
-// 	};
-	
-// });

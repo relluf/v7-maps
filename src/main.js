@@ -116,11 +116,14 @@ define(function(require) {
 
 	window.f7a = app;
 	mainView.router.navigate("/map", { animate: false });
-	// leftView.router.navigate("/menu", { animate: false });
-	
 
-	if(window.location.toString().endsWith("cordova")) {
+	if(window.location.toString().endsWith("cordova") || window.location.toString().endsWith("wash")) {
 		require(["script!../../v7-cordova/cordova.js"]);
+		
+		document.addEventListener("deviceready", function() {
+	    	cordova.require("cordova-plugin-statusbar.statusbar")
+	    		.styleDefault();
+	   	});
 	}
 	
 	app.panel.left.on("open", function() { localStorage.setItem("left-panel-opened", true ) });
@@ -132,9 +135,11 @@ define(function(require) {
 	
 	// initialize left when session info is available
 	Session.info().then(function() {
-		if(leftView.router.currentRoute.path === "/menu") {
-			leftView.router.refreshPage();
-		}
+		V7.router.refresh("/menu");
+		// if(leftView.router.currentRoute.path === "/menu") {
+			// console.log("refresh left");
+		// 	leftView.router.refreshPage();
+		// }
 	});
 		
 	Session.refresh().then(function() {
@@ -164,13 +169,4 @@ define(function(require) {
 	document.addEventListener("ontouchstart" in window ? 
 		"touchstart" : "mousedown", checkBlockSwipe);
 	
-	document.addEventListener("deviceready", function() {
-    	var sb = cordova.require("cordova-plugin-statusbar.statusbar");
-    	sb.styleDefault();
-    	
-    	document.addEventListener("touchmove", function(e) {
-    		// console.log(e.touches.length);	
-    	}, true);
-    	
-   	});
 });

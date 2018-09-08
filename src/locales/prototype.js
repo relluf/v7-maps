@@ -1,4 +1,10 @@
-define(function() { return {
+define(function(require) { 
+	
+	var onderzoek_anchor_tmpl = require("template7!pages/veldoffice/onderzoek/anchor-template.html");
+	var meetpunt_anchor_tmpl = require("template7!pages/veldoffice/meetpunt/anchor-template.html");
+	var locale = window.locale;
+	
+return {
 	"Application": {
 		".title": "Veldapps",
 		".version": "0.1"
@@ -42,6 +48,21 @@ define(function() { return {
 	
 	"Veldoffice":									".",
 	
+	"Anchor": {
+		".factories/": {
+			"menu-anchors-li": function() {
+				// if(!this.instance) throw new Error("Anchor not resolved");
+				
+				var f = locale(String.format("%s.factories/menu-anchors-li", this.entity));
+				if(typeof f === "function") {
+					return f.apply(this.instance, arguments);
+				}
+				// console.warn("Factory menu-anchors-li not registered for " + this.entity);
+				return this.html || ("<li>" + this.entity + "</li>");
+			}
+		}
+	},
+	
 	"Onderzoek": {
 		".attributes":					"",
 		".icon":						"https://cdn0.iconfinder.com/data/icons/industrial-circle/512/hatch_polygon-512.png",
@@ -65,6 +86,9 @@ define(function() { return {
 					r.push("has-fotos");
 				}
 				return r.join(" ");
+			},
+			"menu-anchors-li": function() {
+				return onderzoek_anchor_tmpl(this);
 			}
 		}
 	},
@@ -74,6 +98,9 @@ define(function() { return {
 		".factories/": {
 			"title": function() {
 				return String.format("%s, %s", this.code, js.get("type.naam", this));
+			},
+			"menu-anchors-li": function() {
+				return meetpunt_anchor_tmpl(this);
 			}
 		}
 	}
