@@ -22,13 +22,13 @@ require.config({ paths: {
 	"blocks": "node_modules/cavalion-blocks/src/",
 	
 	/* veldapps.com */		
-	"veldapps": "../lib/veldoffice-js/src/veldapps.com",
-	"veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice",
-	"vcl/veldoffice": "../lib/veldoffice-js/src/veldapps.com/veldoffice/vcl-veldoffice",
+	"veldapps": "node_modules/veldoffice-js/src/veldapps.com",
+	"veldoffice": "node_modules/veldoffice-js/src/veldapps.com/veldoffice",
+	"vcl/veldoffice": "node_modules/veldoffice-js/src/veldapps.com/veldoffice/vcl-veldoffice",
 	/*- veldoffice/3rd party */
-	"proj4": "../lib/veldoffice-js/src/proj4js.org/proj4-src",
-	"epsg": "../lib/veldoffice-js/src/proj4js.org/epsg",
-	"leaflet": "../lib/veldoffice-js/src/leafletjs.com"
+	"proj4": "node_modules/veldoffice-js/src/proj4js.org/proj4-src",
+	"epsg": "node_modules/veldoffice-js/src/proj4js.org/epsg",
+	"leaflet": "node_modules/veldoffice-js/src/leafletjs.com"
 
 }});
 
