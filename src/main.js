@@ -46,7 +46,7 @@ define(function(require) {
 	window.$ = $;
 	window.$$ = Dom7;
 	window.req = req;
-	window.V7 = V7;
+	// window.V7 = V7;
 
 	/* Make life easier */
 	var qsa = Element.prototype.querySelectorAll;
@@ -134,19 +134,16 @@ define(function(require) {
 	app.statusbar.hide();
 	
 	// initialize left when session info is available
-	Session.info().then(function() {
+	Session.info().then(function(res) {
+		V7.objects.get("/menu").session = res;
 		V7.router.refresh("/menu");
-		// if(leftView.router.currentRoute.path === "/menu") {
-			// console.log("refresh left");
-		// 	leftView.router.refreshPage();
-		// }
+		V7.objects.save("/menu"); // TODO Hmmz, could this be automatic? pagein/out/refresh
 	});
 		
 	Session.refresh().then(function() {
 		V7.sessionNeeded();
 	});
 
-	// leftView.router.navigate("/session", { animate: false });
 	// document.documentElement.classList.remove("md");
 	// document.documentElement.classList.add("ios");
 	

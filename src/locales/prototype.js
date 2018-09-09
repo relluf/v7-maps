@@ -1,7 +1,5 @@
 define(function(require) { 
 	
-	var onderzoek_anchor_tmpl = require("template7!pages/veldoffice/onderzoek/anchor-template.html");
-	var meetpunt_anchor_tmpl = require("template7!pages/veldoffice/meetpunt/anchor-template.html");
 	var locale = window.locale;
 	
 return {
@@ -66,7 +64,7 @@ return {
 	"Onderzoek": {
 		".attributes":					"",
 		".icon":						"https://cdn0.iconfinder.com/data/icons/industrial-circle/512/hatch_polygon-512.png",
-		".factories/": {
+		".factories/": { // <<< MODEL
 			"title": function() {
 				var r = []; 
 				this.projectcode && r.push(this.projectcode);
@@ -86,21 +84,15 @@ return {
 					r.push("has-fotos");
 				}
 				return r.join(" ");
-			},
-			"menu-anchors-li": function() {
-				return onderzoek_anchor_tmpl(this);
 			}
 		}
 	},
 	"Meetpunt": {
 		".icon":						"http://icons.iconarchive.com/icons/pelfusion/long-shadow-media/128/Maps-Pin-Place-icon.png",
 		".types":						[2377, 2382, 2387, 2392, 2397, 2402, 2407, 2412, 2417, 2422, 2427, 2432, 2437, 2442, 2447, 2452, 2457, 2462],
-		".factories/": {
+		".factories/": {  // <<< MODEL
 			"title": function() {
 				return String.format("%s, %s", this.code, js.get("type.naam", this));
-			},
-			"menu-anchors-li": function() {
-				return meetpunt_anchor_tmpl(this);
 			}
 		}
 	}

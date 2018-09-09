@@ -29,7 +29,6 @@ require.config({ paths: {
 	"proj4": "node_modules/veldoffice-js/src/proj4js.org/proj4-src",
 	"epsg": "node_modules/veldoffice-js/src/proj4js.org/epsg",
 	"leaflet": "node_modules/veldoffice-js/src/leafletjs.com"
-
 }});
 
 define("app/hotkeys", ["util/HotkeyManager"], function(HKM) {
@@ -222,7 +221,9 @@ require(["moment", "moment/locale/nl", "locale!en-US", "locale!du-NL"], function
 		if(Framework7.device.iphoneX === true) {
 			document.documentElement.classList.add("iphonex");
 		}
-	
-		require(["main"]);
+		require(["V7"], function(V7) {
+			window.V7 = V7; // so that it can be used in pages/.../component.js
+			require(["main"]);
+		});
 	});
 });

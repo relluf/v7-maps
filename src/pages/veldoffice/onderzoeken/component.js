@@ -11,7 +11,9 @@ define(function(require) {
 	var ITEM_HEIGHT = 114;
 	var PAGE_SIZE = 50;
 	var arr = []; // TODO should be refactored out to a virtualList "local" variable
-	var pager = { // TODO refractor to a EM.Pager class or something
+	
+	var mostRecent_modified = 0;
+	var pager = { // TODO refactor to a EM.Pager class or something
 		path: module.id + "/queries/recent/pages/",
 		requesting: {},
 		load: function(page) {
@@ -19,34 +21,22 @@ define(function(require) {
 				return this.requesting[page];
 			}
 			
-			var me = this, work = [getMostRecentModified(), getIndex(), 
-				V7.objects.fetch(this.path + page)];
+			var me = this;
 				
-			return (this.requesting[page] = Promise.all(work).then(function(values) {
-				var mostRecent_modified = values[0].getTime();
-				var index_modified = new Date(values[1].modified || 0).getTime();
-				var page_modified = new Date(values[2].modified || 0).getTime();
-				var result = values[2];
+			return (this.requesting[page] = V7.objects.fetch(this.path + page).then(function(result) {
+				var page_modified = new Date(result.modified || 0).getTime();
 				
-				console.log("Pager.load()", mostRecent_modified - index_modified,
+				console.log("Pager.load()", mostRecent_modified - page_modified,
 					me.path, { most_recent: new Date(mostRecent_modified), 
-						modified: new Date(index_modified) });
+						modified: new Date(page_modified) });
 				
 				delete me.requesting[page];
 
 				if(result.data) {
-					if(page === 0) {
-						if(mostRecent_modified > page_modified) {
-							console.log("first page expired", page);
-							delete result.data;
-							delete result.modified;
-						}
-					} else {
-						if(index_modified > page_modified) {
-							console.log("page expired", page);
-							delete result.data;
-							delete result.modified;
-						}
+					if(mostRecent_modified > page_modified) {
+						console.log("page expired", page);
+						delete result.data;
+						delete result.modified;
 					}
 				}
 				return result;
@@ -72,31 +62,6 @@ define(function(require) {
 		load: pager.load,
 		save: pager.save
 	};
-
-	function getMostRecentModified() {
-		if(!arguments.callee.promise) {
-			arguments.callee.promise = EM.query("Onderzoek", "max:modified")
-				.then(function(obj) {
-					obj = obj[0] || {};
-					return new Date(obj['max:modified']);
-				});
-		}
-		return arguments.callee.promise;
-	}	
-	function getIndex(name) {
-		name = name || (pager.path + "0");
-		
-		var index = V7.objects.get(name);
-		if(!index.modified) {
-			return V7.objects.fetch(name).then(function() {
-				// index.modified = new Date(index.modified || Date.now());
-				return index;
-			});
-		} else if(!(index.modified instanceof Date)) {
-			// index.modified = new Date(index.modified);
-		}
-		return Promise.resolve(index);
-	}
 
 	function match(onderzoek, query) {
 		return query.split(" ").some(function(query) {
@@ -156,10 +121,21 @@ define(function(require) {
 		});
 	}
 	function getFirstPage(e) {
-		delete getMostRecentModified.promise;
 		return getNextPage(e, 0);
 	}
 	
+	function getMostRecentModified() {
+		var callee = getMostRecentModified;
+		if(!callee.promise) {
+			callee.promise = EM.query("Onderzoek", "max:modified")
+				.then(function(obj) {
+					obj = obj[0] || {};
+					delete callee.promise;
+					return (mostRecent_modified = new Date(obj['max:modified']).getTime());
+				});
+		}
+		return callee.promise;
+	}	
 	function pageInit(e) {
 		$$(".search-on-server", e.target).addClass("display-none");
 		e.target.up(".view").down(".searchbar").on({
@@ -171,7 +147,7 @@ define(function(require) {
 			}
 		});
 		getFirstPage(e).then(function() { 
-			f7a.virtualList.create({
+			var vl = f7a.virtualList.create({
 				el: e.target.qs(".virtual-list"),
 		    	cache: true,
 		    	rowsAfter: 10,
@@ -189,6 +165,13 @@ define(function(require) {
 		        },
 		        height: ITEM_HEIGHT
 		    });
+		    // refresh
+			getMostRecentModified().then(function() {
+				return getFirstPage(e).then(function(res) {
+					arr.splice.apply(arr, [0, arr.length].concat(res));
+					vl.update(true);
+				});
+			});
 		});
 	}
 	
@@ -210,12 +193,16 @@ define(function(require) {
 					// f7a.ptr.done(ptr);	
 					// return;
 				}
-	
-				getFirstPage(e).then(function(res) {
-					arr.splice.apply(arr, [0, arr.length].concat(res));
-					f7a.ptr.done(e.target);	
-					f7a.virtualList.get(e.target.up(".page").qs(".virtual-list")).update(true);
+				
+				delete getMostRecentModified.promise;
+				getMostRecentModified().then(function() {
+					return getFirstPage(e).then(function(res) {
+						arr.splice.apply(arr, [0, arr.length].concat(res));
+						f7a.ptr.done(e.target);	
+						f7a.virtualList.get(e.target.up(".page").qs(".virtual-list")).update(true);
+					});
 				});
+				
 			}
 		},
 		template: template, on: { pageInit: pageInit } };

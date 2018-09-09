@@ -19,7 +19,7 @@ define(function(require) {
 	var v7_objects = new PouchDB("v7-objects");
 	var v7_objects_timeouts = {};
 	var v7_objects_idx = {};
-	
+
 	function calcHash(object) {
 		var hash = {};
 		for(var k in object) {
@@ -28,6 +28,19 @@ define(function(require) {
 			}
 		}
 		return Hash.md5(JSON.stringify(hash));
+	}
+	function v7_objects_create(id, proto) {
+		var props = {};
+		if(proto) {
+			props._proto = {
+				writable: false, value: proto,
+				enumerable: false
+			};
+		}
+
+		var r = Object.create(proto || Object.prototype, props);
+		r._id = id;
+		return (v7_objects_idx[id] = r);
 	}
 
 	return {
@@ -42,14 +55,14 @@ define(function(require) {
 		objects: {
 			idx: v7_objects_idx,
 			db: v7_objects,
-			get: function(id) {
+			get: function(id, proto) {
 				// Always returns the same JavaScript object
 				if(v7_objects_idx[id] instanceof Promise) {
 					return v7_objects_idx[id].$object;
 				}
-				return v7_objects_idx[id] || this.fetch(id).$object;
+				return v7_objects_idx[id] || this.fetch(id, proto).$object;
 			},
-			fetch: function(id) {
+			fetch: function(id, proto) {
 				// Returns a Promise which will resolve when id is refreshed
 				if(v7_objects_idx[id] instanceof Promise) {
 					// console.log("V7.objects.fetch", id, "already fetching");
@@ -59,7 +72,8 @@ define(function(require) {
 				var object = v7_objects_idx[id];
 				if(object === undefined) {
 					// console.log("V7.objects.fetch", id, "created");
-					object = (v7_objects_idx[id] = {_id: id});
+					// object = (v7_objects_idx[id] = {_id: id});
+					object = v7_objects_create(id, proto);
 				}
 				var r = (v7_objects_idx[id] = new Promise(function(resolve, reject) {
 					v7_objects.get(id, function(err, obj) {
@@ -93,6 +107,10 @@ define(function(require) {
 			// 	});
 			// },
 			save: function(object, options) {
+				if(typeof object === "string") {
+					return V7.objects.save(V7.objects.get(object), options);
+				}
+				
 				if(V7.objects.get(object._id) !== object) {
 					throw new Error("Object not managed");
 				}
