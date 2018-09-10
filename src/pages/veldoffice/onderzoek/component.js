@@ -66,8 +66,9 @@ define(function(require) {
 						html: anchor_tmpl(comp)
 					});
 				}
-				V7.objects.save(menu);
-				V7.router.refresh("/menu");
+				V7.objects.save(menu).then(function() {
+					V7.router.refresh("/menu");
+				});
 				V7.router.refresh("/veldoffice/onderzoek");
 			}
 		},

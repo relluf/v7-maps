@@ -12,7 +12,7 @@
 	        </div>
 	    </div>
 	</div>
-	<div class="page-content hide-navbar-on-scroll ptr-content infinite-scroll-content_">
+	<div class="page-content hide-navbar-on-scroll ptr-content">
 	    <div class="ptr-preloader">
 			<div class="preloader"></div>
 			<div class="ptr-arrow"></div>
@@ -25,7 +25,6 @@
 			<div class="subtitle title">{{user.name}}</div>
 			<span>{{user.company}}</span>
 		</div>
-
 		<!--<div class="block-title">{{l "Shortcuts"}}</div>-->
 		<!--<div class="button-block">-->
 		<!--	<a class="flex2"></a>-->
@@ -34,18 +33,17 @@
 		<!--	<a class="flex2"></a>-->
 		<!--</div>		-->
 		<div class="button-block">
-			<a class="button button-big button-round button-new foto flex1">
-				<i class="fa fa-plus"></i>{{l "Foto/New.button"}}</a>
-			<a href="" class="button button-big button-round button-new meetpunt flex1"><i class="fa fa-plus"></i>{{l "Locatie/New.button"}}</a>
-			<a href="" class="button button-big button-round button-new scan flex1"><i class="fa fa-plus"></i>{{l "Scan/New.button"}}</a>
+			<a href="" class="button button-round meetpunt flex1">{{l "Locatie/New.button"}}</a>
+			<a href="" class="button button-round scan flex1">{{l "Scan/New.button"}}</a>
+			<a class="button button-round foto flex1">{{l "Foto/New.button"}}</a>
+		</div>		
+		<div class="button-block">
+			<span class="flex1"></span>
+			<a href="" class="button button-round scan flex2">{{l "Onderzoek/New.button"}}</a>
+			<a href="" class="button button-round scan flex2">{{l "Meetpunt/New.button"}}</a>
+			<span class="flex1"></span>
 		</div>		
 		
-		{{#if anchors.length}}
-		<div class="block-title">{{l "Anchor.plural"}}</div>
-		<div class="list media-list onderzoek"><ul> {{#each anchors}} {{l ">" this "Anchor" "menu-anchors-li"}} {{/each}} 
-		</ul></div>
-		{{/if}}
-
 		<div class="block-title">{{l "Veldoffice"}}</div>
 		<div class="list"><ul>
 			<li><a href="/veldoffice/onderzoeken" class="item-content item-link">
@@ -59,7 +57,7 @@
 					<div class="count-onderzoeken item-after">&nbsp;</div>
 				</div>
 			</a></li>
-			<li><a href="/mlocations" class="display-none item-content item-link">
+			<li><a href="/menu/menu" class="item-content item-link">
 				<div class="item-media">
 					<i class="fa fa-fw fa-map-marker menu-icon bg-color-green "></i>
 				</div>
@@ -70,6 +68,8 @@
 					<div class="count-onderzoeken item-after">&nbsp;</div>
 				</div>
 			</a></li>
+		</div>
+		<div class="list"><ul>
 			<li><a href="/photos" class="item-content item-link">
 				<div class="item-media">
 					<i class="fa fa-fw fa-photo menu-icon bg-color-green "></i>
@@ -82,6 +82,12 @@
 			</a></li>
 		</ul></div>
 		
+		{{#if anchors.length}}
+		<div class="block-title">{{l "Anchor.plural.header"}}</div>
+		<div class="list media-list onderzoek"><ul> {{#each anchors}} {{l ">" this "Anchor" "menu-anchors-li"}} {{/each}} 
+		</ul></div>
+		{{/if}}
+
 		<div class="block-title">{{l "Settings"}}</div>
 		<div class="list"><ul>
 			<li><a href="/settings/language" class="item-content item-link">

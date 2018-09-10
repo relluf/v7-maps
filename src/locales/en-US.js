@@ -43,6 +43,7 @@ define(function() { return {
 	"No":											".",
 	"Collections":									".",
 	"Settings":										".",
+	"Menu":											".",
 	"photos":										"photos",
 	
 	"Account":										".",	

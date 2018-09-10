@@ -19,7 +19,8 @@ define(function(require) {
 	var v7_objects = new PouchDB("v7-objects");
 	var v7_objects_timeouts = {};
 	var v7_objects_idx = {};
-
+	var v7_objects_listeners = {};
+	
 	function calcHash(object) {
 		var hash = {};
 		for(var k in object) {
@@ -42,6 +43,13 @@ define(function(require) {
 		r._id = id;
 		return (v7_objects_idx[id] = r);
 	}
+	function v7_objects_emit(id, name, args) {
+		return (v7_objects_listeners[id] || []).map(function(listener) {
+			if(listener.name === name) {
+				return listener.callback.apply(listener, args);
+			}
+		});
+	}
 
 	return {
 		locale: {},	
@@ -53,7 +61,7 @@ define(function(require) {
 		
 		// Small wrapper around pouch'd objects
 		objects: {
-			idx: v7_objects_idx,
+			idx: v7_objects_idx, listeners: v7_objects_listeners,
 			db: v7_objects,
 			get: function(id, proto) {
 				// Always returns the same JavaScript object
@@ -82,6 +90,7 @@ define(function(require) {
 							v7_objects_idx[id] = object;
 						}
 						resolve(object);
+						v7_objects_emit(object._id, "fetched", [object]);
 						delete r.$object;
 					});
 				}));
@@ -124,7 +133,10 @@ define(function(require) {
 						}
 						v7_objects_timeouts[object._id] = setTimeout(function() {
 							delete v7_objects_timeouts[object._id];
-							V7.objects.save(object, { delay: false }).then(resolve).catch(reject);
+							V7.objects.save(object, { delay: false }).then(function(result) {
+								v7_objects_emit(object._id, "saved", [result]);
+								resolve(result);
+							}).catch(reject);
 						}, options.delay);
 					});
 				}
@@ -147,6 +159,22 @@ define(function(require) {
 				}
 				
 				return Promise.resolve(object);
+			},
+			changed: function(object) {
+				return object.hash_ !== calcHash(object);
+			},
+			on: function(object, name, callback) {
+				if(typeof object === "string") {
+					return V7.objects.on(V7.objects.get(object), name, callback);
+				}
+				
+				if(V7.objects.get(object._id) !== object) {
+					throw new Error("Object not managed");
+				}
+				
+				var id = object._id;
+				v7_objects_listeners[id] = (v7_objects_listeners[id] || []);
+				v7_objects_listeners[id].push({ name: name, callback: callback });
 			}
 		},
 		session: {},
@@ -162,6 +190,7 @@ define(function(require) {
 		router: {
 			navigate: function() {},
 			refresh: function(path) {
+				if(!window.f7a) return;
 				// Refreshes -path- in all views
 				["main", "left"/*, "detail"*/].forEach(function(view) {
 					var router = f7a.views[view].router;
@@ -289,7 +318,7 @@ define(function(require) {
 					onderzoek.contour.addTo(V7.map);
 	
 					var markers = onderzoek.meetpunt_markers = L.markerClusterGroup({
-						disableClusteringAtZoom: 13,
+						// disableClusteringAtZoom: 13,
 						// chunkedLoading: true,
 						// chunkDelay: 100,
 						// chunkProgress: function(processed, total, elapsed, layersArray) {
@@ -367,6 +396,20 @@ define(function(require) {
 		    toRD: function(latlng) {
 		    	return L.Projection.RD.project(latlng);
 		    }
+		},
+		features: {
+			add: function() {
+				
+			},
+			remove: function() {
+				
+			},
+			flyTo: function() {
+				
+			},
+			edit: function() {
+				
+			}
 		},
 
 	//	General Routing

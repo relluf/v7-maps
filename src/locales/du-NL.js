@@ -44,6 +44,7 @@ define(function() { return {
 	"No":											"Nee",
 	"Collections":									"Collecties",
 	"Settings":										"Instellingen",
+	"Menu":											".",
 	"photos":										"foto's",
 	
 	"Account":										".",	
@@ -60,7 +61,8 @@ define(function() { return {
 	
 	"Anchor": {
 		"":											".",
-		".plural":									"Anchors"
+		".plural":									"Ankers",
+		".plural.header":							"Verankerd"
 	},
 	
 	"Scan": {
@@ -70,6 +72,7 @@ define(function() { return {
 	"Onderzoek": {
 		"":											".",
 	// ".title":									".",
+		"/New.button":								"onderzoek",
 		".subtitle":								"Contouren van veldoffice.nl",
 		".plural":									"Onderzoeken",
 		".search-label":							"Alle onderzoeken, recent gewijzigde eerst. Middels het zoekveld hierboven kunt u de lijst filteren overeenkomstig de attributen naam, projectcode en/of bedrijf.",

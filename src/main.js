@@ -112,10 +112,14 @@ define(function(require) {
 		theme: "ios"
 	});    	
 	var mainView = app.views.main;
-	var leftView = app.views.left = app.views.create(".view-left", { url: "/menu" });
+	var leftView = app.views.left = app.views.create(".view-left", { 
+		url: "/menu-fix",
+		stackPages: true
+	});
 
 	window.f7a = app;
 	mainView.router.navigate("/map", { animate: false });
+	leftView.router.navigate("/menu", { animate: false });
 
 	if(window.location.toString().endsWith("cordova") || window.location.toString().endsWith("wash")) {
 		require(["script!../../v7-cordova/cordova.js"]);
@@ -136,7 +140,6 @@ define(function(require) {
 	// initialize left when session info is available
 	Session.info().then(function(res) {
 		V7.objects.get("/menu").session = res;
-		V7.router.refresh("/menu");
 		V7.objects.save("/menu"); // TODO Hmmz, could this be automatic? pagein/out/refresh
 	});
 		

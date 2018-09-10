@@ -4,10 +4,18 @@ define(function(require) {
 	var Session = require("veldoffice/Session");
 	var Framework7 = require("framework7");
 
-	var menu = V7.objects.get("/menu");
+	V7.objects.on("/menu", "saved", function() {
+		// console.log("/menu need refresh (saved)");
+		V7.router.refresh("/menu");	
+	});
+	V7.objects.on("/menu", "fetched", function() {
+		// console.log("/menu need refresh (fetched)");
+		V7.router.refresh("/menu");	
+	});
 
 	return { 
 		data() {
+			var menu = V7.objects.get("/menu");
 			var name = js.get("session.name", menu) || "&nbsp;";
 			var company = js.get("session.bedrijf.naam", menu) || "&nbsp;";
 			
@@ -19,14 +27,16 @@ define(function(require) {
 		},
 		template: template, 
 		bindings: {
-			".page-content infinite": function() {
+ 			".page-content infinite": function() {
 				console.log("infinite", { 'this': this, args: arguments });
 			},
 			".ptr-content ptr:refresh": function(e) {
 				Session.refresh().then(function() {
 					f7a.ptr.done(e.target);
-					V7.sessionNeeded();
-					V7.refreshMenu(); //?
+					setTimeout(function() {
+						V7.sessionNeeded();
+						V7.refreshMenu(); //?
+					}, 500);
 				});
 			},
 			".link.logout click": function() {
@@ -53,18 +63,19 @@ define(function(require) {
 					V7.navigate("left", "/login");
 				}
 			},
-			".button-new.foto click": function(e) {
+			".button.foto click": function(e) {
 				V7.takePhoto();	
 				$$(e.target).toggleClass("button-fill");
 			},
-			".button-new.meetpunt click": function(e) {
+			".button.meetpunt click": function(e) {
 				V7.trackLocation();	// track/input/grabPhoto/Location/Scan/Audio/Video
 				$$(e.target).toggleClass("button-fill");
 			},
-			".button-new.scan click": function(e) {
+			".button.scan click": function(e) {
 				V7.scanCode({flash:"off"}, function() { console.log("ok", arguments) }, function() { console.log("err", arguments) })
 				$$(e.target).toggleClass("button-fill");
 			},
+			
 			".button.rewind click": function(e) {
 				history.back();						
 			},
@@ -80,5 +91,3 @@ define(function(require) {
 		}
 	};
 });
-
-

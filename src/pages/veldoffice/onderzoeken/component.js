@@ -69,7 +69,7 @@ define(function(require) {
 				return onderzoek.count_valid_meetpunten >= parseInt(query.split(":")[1], 10);
 			}
 			
-			return ["projectcode", "naam", "bedrijf"].some(function(key) {
+			return ["projectcode", "naam", "bedrijf_naam"].some(function(key) {
 				var str = onderzoek[key];
 				return typeof str === "string" 
 					&& str.toLowerCase().indexOf(query.toLowerCase()) !== -1;

@@ -1,3 +1,6 @@
+### 2018-09-10
+
+
 ### 2018-09-09
 - Introducing `window.V7` global, should be available after bootstrap
 - Simplifying /menu, less code, data/state driven

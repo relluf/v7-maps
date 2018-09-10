@@ -1,6 +1,7 @@
 define(function(require) {
 
 	var menu = require("pages/v7/menu/component");
+	var menufix = require("pages/v7/menu-fix/component");
 	var map = require("pages/v7/map/component");
 	
 	var onderzoeken = require("pages/veldoffice/onderzoeken/component");
@@ -34,6 +35,7 @@ define(function(require) {
 
 		component("/map", map ),
 		component("/menu", menu ),
+		component("/menu-fix", menufix ),
 		component("/veldoffice/onderzoeken", onderzoeken),
 		component("/veldoffice/onderzoek", onderzoek),
 		component("/veldoffice/meetpunt", meetpunt),
