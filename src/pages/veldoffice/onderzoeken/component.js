@@ -8,9 +8,17 @@ define(function(require) {
 	var EM = require("veldoffice/EM");
 	var moment = require("moment");
 
+	var ATTRIBUTES = [
+		"countdistinct:[outer]fotos.id count_fotos",
+		"countdistinct:[outer]meetpunten.id count_meetpunten",
+		// "countdistinct:[outer]labopdrachten.id count_labopdrachten",
+		"[outer]bedrijf.naam bedrijf_naam", 
+		"id", "naam", "projectcode", "contour",
+		"created", "modified", "status", "methode"
+	];
 	var ITEM_HEIGHT = 114;
 	var PAGE_SIZE = 50;
-	var arr = []; // TODO should be refactored out to a virtualList "local" variable
+	var arr = []; // TODO should be refactored out to a virtualList "local" variable (or should it? sharing the same array over all lists isn't that bad)
 	
 	var mostRecent_modified = 0;
 	var pager = { // TODO refactor to a EM.Pager class or something
@@ -62,30 +70,17 @@ define(function(require) {
 		load: pager.load,
 		save: pager.save
 	};
+	var pager_search = {
+		path_: module.id + "/queries/recent[search=%s]/pages/",
+		path: "",
+		requesting: {},
+		load: pager.load,
+		save: pager.save
+	};
 
-	function match(onderzoek, query) {
-		return query.split(" ").some(function(query) {
-			if(0 && query.indexOf("count-meetpunt") === 0) {
-				return onderzoek.count_valid_meetpunten >= parseInt(query.split(":")[1], 10);
-			}
-			
-			return ["projectcode", "naam", "bedrijf_naam"].some(function(key) {
-				var str = onderzoek[key];
-				return typeof str === "string" 
-					&& str.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-			});
-		});
-	}
 	function queryPage(page) {
 		return Promise.all([
-			EM.query("Onderzoek", [
-					"countdistinct:[outer]fotos.id count_fotos",
-					"countdistinct:[outer]meetpunten.id count_meetpunten",
-					// "countdistinct:[outer]labopdrachten.id count_labopdrachten",
-					"[outer]bedrijf.naam bedrijf_naam", 
-					"id", "naam", "projectcode", "contour",
-					"created", "modified", "status", "methode"
-				], {
+			EM.query("Onderzoek", ATTRIBUTES, {
 					page: [page, PAGE_SIZE, pager],
 					groupBy: "id", 
 					orderBy: "modified desc",
@@ -124,6 +119,48 @@ define(function(require) {
 		return getNextPage(e, 0);
 	}
 	
+	function match(onderzoek, query) {
+		return query.split(" ").some(function(query) {
+			if(0 && query.indexOf("count-meetpunt") === 0) {
+				return onderzoek.count_valid_meetpunten >= parseInt(query.split(":")[1], 10);
+			}
+			return ["projectcode", "naam", "bedrijf_naam"].some(function(key) {
+				var str = "" + onderzoek[key];
+				return typeof str === "string" 
+					&& str.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+			});
+		});
+	}
+	function getFirstSearchPage(terms) {
+		var term = terms[0];
+		return Promise.all([
+			EM.query("Onderzoek", ATTRIBUTES, { 
+				where: ["and", 
+					["or", ["contains", "naam", term], ["contains", "projectcode", term]],
+					["lt", "modified", Date.now()] // TODO
+				],
+				// page: [page, PAGE_SIZE, pager_coords],
+				groupBy: "id",
+				orderBy: "modified desc"
+			}),
+			
+			EM.query("Onderzoek", "id,count:meetpunten.id count_meetpunten_with_coords", { 
+				where: ["and", 
+					["or", ["contains", "naam", term], ["contains", "projectcode", term]],
+					["lt", "modified", Date.now()], // TODO
+					["isnotnull", "meetpunten.xcoord"], 
+					["isnotnull", "meetpunten.ycoord"]
+				],
+				// page: [page, PAGE_SIZE, pager_coords],
+				orderBy:"modified desc", 
+				groupBy: "id"
+			})
+			
+		]).then(function(values) {
+			return values[0];
+		});
+	}
+	
 	function getMostRecentModified() {
 		var callee = getMostRecentModified;
 		if(!callee.promise) {
@@ -137,15 +174,15 @@ define(function(require) {
 		return callee.promise;
 	}	
 	function pageInit(e) {
-		$$(".search-on-server", e.target).addClass("display-none");
-		e.target.up(".view").down(".searchbar").on({
-			"searchbar:enable": function(e) {
-				$$(".search-on-server").removeClass("display-none");
-			},
-			"searchbar:disable": function(e) {
-				$$(".search-on-server").addClass("display-none");
-			}
-		});
+		// $$(".search-on-server", e.target).addClass("display-none");
+		// e.target.up(".view").down(".searchbar").on({
+		// 	"searchbar:enable": function(e) {
+		// 		$$(".search-on-server").removeClass("display-none");
+		// 	},
+		// 	"searchbar:disable": function(e) {
+		// 		$$(".search-on-server").addClass("display-none");
+		// 	}
+		// });
 		getFirstPage(e).then(function() { 
 			var vl = f7a.virtualList.create({
 				el: e.target.qs(".virtual-list"),
@@ -177,14 +214,69 @@ define(function(require) {
 	
 	return { 
 		bindings: {
+			navbar: {
+				".searchbar searchbar:disable": function(e) {
+					var vl = f7a.virtualList.get(
+						e.target.up(".view")
+							.down(".page-current .virtual-list")
+					);
+					vl.replaceAllItems(arr);
+					vl.update();
+				},
+				".searchbar searchbar:clear": function(e) {
+				},
+				".searchbar searchbar:search": function(e) {
+if(e.target.$blocked) {
+	return;
+}
+var page = e.target.up(".view").down(".page-current");
+					// this = form-element
+					var term = this.down("input").value;
+					var terms = term.split(" ").filter(_ => _.length > 0);
+					
+					if(!term.length) {
+						if(this.$timeout) window.clearTimeout(this.$timeout);
+						delete this.$timeout;
+						// TODO more clean up?
+						console.log("more cleanup?");
+						return;
+					}
+					
+					if(this.$timeout) window.clearTimeout(this.$timeout);
+					this.$timeout = window.setTimeout(function() {
+$$(page.down(".preloader.searcher")).removeClass("display-none");
+						getFirstSearchPage(terms).then(function(res) {
+$$(page.down(".preloader.searcher")).addClass("display-none");
+							var vl = f7a.virtualList.get(page.down(".virtual-list"));
+							vl.replaceAllItems(res);
+							vl.update();
+e.target.$blocked = true;
+							var sb = f7a.searchbar.get(e.target), q = sb.previousQuery;
+							sb.search(q, true);
+e.target.$blocked = false;
+						});
+						
+						
+						
+					}, 500);
+					
+				}
+			},
 			".infinite-scroll-content infinite": function(e) {
 				var page = e.target.up(".page");
-				if(!page.hasOwnProperty("$infinite-busy")) {
-					page['$infinite-busy'] = Date.now();
-					getNextPage(e).then(function() {
-						delete page['$infinite-busy'];
-						f7a.virtualList.get(page.qs(".virtual-list")).update();
-					});
+				var view = e.target.up(".view");
+				var sb = f7a.searchbar.get(view.down(".searchbar"));
+				if(!sb.enabled) {
+					if(!page.hasOwnProperty("$infinite-busy")) {
+						page['$infinite-busy'] = Date.now();
+						getNextPage(e).then(function() {
+							delete page['$infinite-busy'];
+							f7a.virtualList.get(page.qs(".virtual-list")).update();
+						});
+					}
+				} else {
+					
+					console.log("!!! search-infinite !!!! ");
 				}
 			},
 			".ptr-content ptr:refresh": function(e) {

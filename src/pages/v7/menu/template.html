@@ -20,18 +20,11 @@
 		<div class="block center"></div>
 		<div class="center">
 			<div class="title">
-				<a class="link avatar"><i class="fa fa-user-circle"></i></a>
+				<a href="/account" class="link avatar"><i class="fa fa-user-circle"></i></a>
 			</div>
 			<div class="subtitle title">{{user.name}}</div>
 			<span>{{user.company}}</span>
 		</div>
-		<!--<div class="block-title">{{l "Shortcuts"}}</div>-->
-		<!--<div class="button-block">-->
-		<!--	<a class="flex2"></a>-->
-		<!--	<a href="" class="button button-big button-round button-new investigation flex4"><i class="fa fa-plus"></i>{{l "Investigation/New.button"}}</a>-->
-		<!--	<a href="" class="button button-big button-round button-new investigation flex4"><i class="fa fa-plus"></i>{{l "Meetpunt/New.button"}}</a>-->
-		<!--	<a class="flex2"></a>-->
-		<!--</div>		-->
 		<div class="button-block">
 			<a href="" class="button button-round meetpunt flex1">{{l "Locatie/New.button"}}</a>
 			<a href="" class="button button-round scan flex1">{{l "Scan/New.button"}}</a>
@@ -68,7 +61,7 @@
 					<div class="count-onderzoeken item-after">&nbsp;</div>
 				</div>
 			</a></li>
-		</div>
+		</ul></div>
 		<div class="list"><ul>
 			<li><a href="/photos" class="item-content item-link">
 				<div class="item-media">
@@ -105,14 +98,8 @@
 		<div class="list stream"></div>
 		<div class="infinite-scroll-preloader preloader preloader-big"></div>
 -->
-		<div class="button-block" style="margin-bottom: 50px;">
-			<a class="flex1 button button-bi-g button-round rewind">&lt;</a>
-			<a class="flex2 button button-bi-g button-round reload">{{l "Restart"}}</a>
-			<a class="flex2 button button-bi-g button-round logout">{{l "Logout"}}</a>
-		</div>
-		
-		<div class="block center" style="color: rgb(77, 87, 109); text-shadow: rgb(250, 250, 250) 0px 2px 0px; text-align: center; font-size: 14px; font-weight: bold;">
-			<p>&copy; Veldapps sinds 2011</p>
+		<div class="block center veldapps-copyright-since">
+			<p>{{l "Veldapps.copyright-since"}}</p>
 		</div>
 	</div>
 </div>

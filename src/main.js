@@ -98,9 +98,11 @@ define(function(require) {
 		var f, name, target = this;
 		for(var selector in bindings) {
 			f = bindings[selector];
-			selector = selector.split(" ");
-			name = selector.pop();
-			$(selector.join(" ") || target, target).on(name, f);
+			if(typeof f === "function") {
+				selector = selector.split(" ");
+				name = selector.pop();
+				$(selector.join(" ") || target, target).on(name, f);
+			}
 		}
 	};
 

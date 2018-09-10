@@ -177,7 +177,26 @@ define(function(require) {
 				v7_objects_listeners[id].push({ name: name, callback: callback });
 			}
 		},
-		session: {},
+		session: {
+			backToWash: function() {
+				history.back();						
+			},
+			reload: function() {
+				location.reload();	
+			},
+			logout: function() {
+				f7a.dialog.confirm(locale("AreYouSureToLogout"), locale("Application.title"), function() {
+					f7a.dialog.preloader(locale("OneMoment"));
+					require("veldoffice/Session").logout().then(function() {
+						V7.objects.db.destroy();
+						localStorage.removeItem("services.veldoffice.autologin");
+						setTimeout(function() {
+							location.reload();	
+						}, 2500);
+					});
+				});
+			}
+		},
 		entities: {
 			get: function(entity, key) {
 				

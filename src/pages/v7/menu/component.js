@@ -8,8 +8,9 @@ define(function(require) {
 		// console.log("/menu need refresh (saved)");
 		V7.router.refresh("/menu");	
 	});
-	V7.objects.on("/menu", "fetched", function() {
+	V7.objects.on("/menu", "fetched", function(menu) {
 		// console.log("/menu need refresh (fetched)");
+		menu.anchors = menu.anchors || [];
 		V7.router.refresh("/menu");	
 	});
 

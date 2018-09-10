@@ -17,11 +17,15 @@ define(function(require) {
 			var pageInit = component.on.pageInit;
 			component.on.pageInit = function(e) {
 				var bindings = typeof component.bindings === "function" ? component.bindings() : component.bindings;
-				e.target.bindAll(bindings);
-				// if(typeof bindings['page:init'] === "function") {
-				// 	// there really is a need to simulate page:init?
-				// 	bindings['page:init'].apply(this, [e]);
-				// }
+				
+				if(bindings.navbar) {
+					if(!bindings.page) console.warn("use navbar and page");
+					e.target.bindAll(bindings.page || bindings);
+					e.target.up(".view").down(".navbar").bindAll(bindings.navbar);
+				} else {
+					e.target.bindAll(bindings);
+				}
+				
 				return typeof pageInit === "function" ? pageInit(e) : component;
 			};
 		}
@@ -30,20 +34,16 @@ define(function(require) {
 	}
 	
 	return [
-		// url("/menu", "menu"),
-		// url("/map", "map"),
-
 		component("/map", map ),
 		component("/menu", menu ),
 		component("/menu-fix", menufix ),
+		
+		url("/account", "veldoffice/account"),
+ 		url("/login", "veldoffice/login"),
+
 		component("/veldoffice/onderzoeken", onderzoeken),
 		component("/veldoffice/onderzoek", onderzoek),
 		component("/veldoffice/meetpunt", meetpunt),
-		
-		// url("/veldoffice/onderzoek", "veldoffice/onderzoek"),
-		// url("/veldoffice/meetpunt", "veldoffice/meetpunt"),
-		
- 		url("/login", "veldoffice/login"),
 
 		url("/photos", "photos")
 	];

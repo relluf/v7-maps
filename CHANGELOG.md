@@ -1,5 +1,6 @@
 ### 2018-09-10
-
+- Developing search feature (/veldoffice/onderzoeken)
+- Introducing /menu-fix, debug page?
 
 ### 2018-09-09
 - Introducing `window.V7` global, should be available after bootstrap

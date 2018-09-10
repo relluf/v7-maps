@@ -10,6 +10,12 @@ define(function() { return {
 	"*-breedte":									"Breedte",
 	"*-hoek":										"Hoek",
 	"*.naamloos":									"{zonder naam}",
+	
+	"Veldapps": {
+		"":											".",
+		".copyright-since":							"&copy; Veldapps sinds 2011",
+	},
+	"Wash":											".",
 
 	"V7":											".",
 	"Register":										"Registreren?",
@@ -26,7 +32,8 @@ define(function() { return {
 	"Shortcuts":									"Snelinvoer",
 	"Soil_Water":									"Bodem en water",
 	
-	"OneMoment":									"(0) (0)",
+	"Reload":										"Herstarten",
+	"OneMoment":									"Even geduld...",
 	"Back":											"Terug",
 	"Close":										"Sluiten",
 	"NothingFound":									"Niets gevonden",

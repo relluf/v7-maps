@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, viewport-fit=cover">
+	<style>
+		
+		#map { width: 100%; bottom: 0; top: 0; left: 0; position: absolute;}
+		
+		@supports(padding: max(0px)) {
+		    .safe-area-inset-width {
+		        padding-left: max(12px, constant(safe-area-inset-left));
+		        padding-right: max(12px, constant(safe-area-inset-right));
+		    }
+		}
+		
+		.iphonex .mk-logo-control {
+			padding-left: 10px;
+			padding-bottom: 20px;
+		}
+		
+		.iphonex .mk-top-left-controls-container {
+			padding-top: 30px;
+		}
+		
+		.iphonex .mk-top-right-controls-container {
+			padding-top: 30px;
+		}
+		
+		.iphonex .mk-bottom-right-controls-container {
+			padding-right: 10px;
+			padding-bottom: 20px;
+		}
+		
+		.iphonex .mk-legal-controls {
+			display: none;
+		}
+		
+		.pulley {
+			-webkit-backdrop-filter: blur(1px);
+			background-color: #f0f0f0;
+			bottom: 0;
+			height: 25%;
+			width: 100%;
+		}
+		
+	</style>
+	<script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script> 
+</head><body class="iphonex">
+	<div id="map"></div> 
+    <div id="app" class="framework7-root ios block-swipe">
+		<div class="statusbar"></div>
+
+		<div class="panel panel-left panel-reveal">
+			<div class="view view-left navbar-through"></div>	
+		    <div class="swipe-handle right border blur">
+				<div class="inner"></div>        
+		    </div>
+		</div>
+		
+		<div class="view view-main view-init ios-edges">
+		</div>
+	</div>
+	<script>
+		mapkit.init({ authorizationCallback: function(done) {
+			done("eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhTM1oyMjdUTEsifQ.eyJpc3MiOiI2MlZLOUVINVVQIiwiaWF0IjoxNTM0MjEyMTQ2LjQzOCwiZXhwIjoxNjkyMDAwMTQ2LjQzOH0.cL-E0os0Oql6pT2ERvxFcT7v9byqfQYPEBcMqv0uQAgVfwGLqAq2x1pZ5Sc0zS9QDXJxgLTIz42wrZ9fe8oblQ");
+		}});
+		
+		let map = new mapkit.Map("map", { center: new mapkit.Coordinate(37.32, -121.88) });
+
+		map.showsScale = mapkit.FeatureVisibility.Visible;
+		map.showsMapTypeControl = true;
+		map.showsUserLocationControl = true;
+		map.showsUserLocation = true;
+
+		map.tintColor = "#123456";
+		map.language = "du-NL";
+		
+		map.isZoomEnabled = true;
+		map.isScrollEnabled = true;
+		map.isRotationEnabled = true;
+
+	    map.addAnnotation(marker);
+	</script>
+	
+	<script>
+		window.lam = function() {
+			var script = document.createElement("script");
+			script.src = "node_modules/requirejs/require.js";
+			script.dataset.main = "index.js";
+			
+			document.head.appendChild(script);
+		};
+	</script>
+	
+</body></html>

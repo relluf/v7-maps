@@ -5,7 +5,7 @@ define(function(require) {
 return {
 	"Application": {
 		".title": "Veldapps",
-		".version": "0.1"
+		".version": "build 156"
 	},
 	"Model": {
 		"":								".",

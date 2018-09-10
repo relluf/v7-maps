@@ -6,6 +6,12 @@ define(function() { return {
 	"*-opmerking":									"Comments",
 	"*-contour":									"Contour",
 	
+	"Veldapps": {
+		"":											".",
+		".copyright-since":							"&copy; Veldapps sinds 2011",
+	},
+	"Wash":											".",
+
 	"V7":											".",
 	"Register":										"Register?",
 	
@@ -26,6 +32,8 @@ define(function() { return {
 	
 	"Soil_Water":									"Soil & Water",
 	
+	"Reload":										"Reload",
+	"OneMoment":									"One moment...",
 	"Back":											".",
 	"Close":										".",
 	"NothingFound":									"Nothing found",
