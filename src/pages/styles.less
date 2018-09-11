@@ -456,6 +456,26 @@ body.ios { background-color: black; background: black; }
     .toolbar span.info { text-align: center; font-size: 9pt; }
 }
 
+.list.fotos {
+	_ul {
+		display: grid;
+		grid-template-columns: repeat(4, 25vw);
+		grid-template-rows: 25vw;
+		grid-gap: 0;
+		padding: 0;
+		background-color: gray;		
+	}
+	ul > li {
+		display: inline-block; width: 25%;
+		overflow: hidden; float: left;
+		border: 0.5px solid #f0f0f0; height: 98px;
+		brackground-color: #f0f0f0;
+		box-sizing: border-box;
+		img {
+			transform: scale3d(1.35, 1.35, 1);
+		}
+	}
+}
 
 /* mapkit */
 .mk-logo-control { display: none; }

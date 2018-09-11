@@ -274,8 +274,7 @@ define(function() { return {
         	"color": "blue"
         }
 	},
-	
-	
+
 	"Bodemlaag": {
 		"":											".",
 		".plural":									"Bodemlagen",
@@ -304,7 +303,7 @@ define(function() { return {
 		"/New.button":								"foto",
 		".plural":									"Foto's",
 		".all":										"Alle foto's",
-		".van":										"van"
+		".navbarOfText":							"van"
 	}
 
 }});

@@ -3,7 +3,8 @@ define(function(require) {
 	var menu = require("pages/v7/menu/component");
 	var menufix = require("pages/v7/menu-fix/component");
 	var map = require("pages/v7/map/component");
-	
+
+	var fotos = require("pages/veldoffice/fotos/component");	
 	var onderzoeken = require("pages/veldoffice/onderzoeken/component");
 	var onderzoek = require("pages/veldoffice/onderzoek/component");
 	var meetpunt = require("pages/veldoffice/meetpunt/component");
@@ -44,7 +45,8 @@ define(function(require) {
 		component("/veldoffice/onderzoeken", onderzoeken),
 		component("/veldoffice/onderzoek", onderzoek),
 		component("/veldoffice/meetpunt", meetpunt),
-
-		url("/photos", "photos")
+		component("/veldoffice/fotos", fotos),
+		
+		url("-", "-")
 	];
 });

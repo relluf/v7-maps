@@ -1,5 +1,6 @@
 ### 2018-09-10
 - Developing search feature (/veldoffice/onderzoeken)
+- Developing photos (/veldoffice/fotos)
 - Introducing /menu-fix, debug page?
 
 ### 2018-09-09

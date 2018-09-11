@@ -212,6 +212,6 @@ define(function() { return {
 	"Foto": {
 		"":											"Photo",
 		".plural":									"Photos",
-		".van":										"of"
+		".navbarOfText":							"of"
 	}
 }});

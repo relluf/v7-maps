@@ -40,6 +40,14 @@ return {
 		".factories/": {
 			"title": function() {
 				return "<img class='Foto-thumb' src='/office-rest/action/images/thumb?id=" + this.id + "'>";
+			},
+			"src.thumb": function() {
+				var tag = new Date(this.modified || Date.now()).getTime();
+				return "/office-rest/action/images/thumb?" + tag + "&id=" + this.id;
+			},
+			"src": function() {
+				var tag = new Date(this.modified || Date.now()).getTime();
+				return "/office-rest/action/images/foto?" + tag + "&id=" + this.id;
 			}
 		}
 	},

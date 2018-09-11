@@ -142,8 +142,14 @@ define(function(require) {
 				// page: [page, PAGE_SIZE, pager_coords],
 				groupBy: "id",
 				orderBy: "modified desc"
+			}).then(function(res) {
+				res.forEach(_ => { 
+					_.page = 0; 
+					_.modified_moment = moment(_.modified).calendar();
+				});
+				return res;
 			}),
-			
+
 			EM.query("Onderzoek", "id,count:meetpunten.id count_meetpunten_with_coords", { 
 				where: ["and", 
 					["or", ["contains", "naam", term], ["contains", "projectcode", term]],
@@ -167,26 +173,17 @@ define(function(require) {
 			callee.promise = EM.query("Onderzoek", "max:modified")
 				.then(function(obj) {
 					obj = obj[0] || {};
-					delete callee.promise;
+					// delete callee.promise;
 					return (mostRecent_modified = new Date(obj['max:modified']).getTime());
 				});
 		}
 		return callee.promise;
 	}	
 	function pageInit(e) {
-		// $$(".search-on-server", e.target).addClass("display-none");
-		// e.target.up(".view").down(".searchbar").on({
-		// 	"searchbar:enable": function(e) {
-		// 		$$(".search-on-server").removeClass("display-none");
-		// 	},
-		// 	"searchbar:disable": function(e) {
-		// 		$$(".search-on-server").addClass("display-none");
-		// 	}
-		// });
 		getFirstPage(e).then(function() { 
 			var vl = f7a.virtualList.create({
 				el: e.target.qs(".virtual-list"),
-		    	cache: true,
+		    	// cache: true,
 		    	rowsAfter: 10,
 		    	rowsBefore: 10,
 		        items: arr,
