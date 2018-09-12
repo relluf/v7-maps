@@ -1,3 +1,4 @@
+var veldoffice_js = "node_modules/veldoffice-js/src";
 require.config({ paths: {
 	"backbone": "node_modules/backbone/backbone",
 	"underscore": "node_modules/underscore/underscore",
@@ -22,13 +23,13 @@ require.config({ paths: {
 	"blocks": "node_modules/cavalion-blocks/src/",
 	
 	/* veldapps.com */		
-	"veldapps": "node_modules/veldoffice-js/src/veldapps.com",
-	"veldoffice": "node_modules/veldoffice-js/src/veldapps.com/veldoffice",
-	"vcl/veldoffice": "node_modules/veldoffice-js/src/veldapps.com/veldoffice/vcl-veldoffice",
+	"veldapps": veldoffice_js + "/veldapps.com",
+	"veldoffice": veldoffice_js + "/veldapps.com/veldoffice",
+	"vcl/veldoffice": veldoffice_js + "/veldapps.com/veldoffice/vcl-veldoffice",
 	/*- veldoffice/3rd party */
-	"proj4": "node_modules/veldoffice-js/src/proj4js.org/proj4-src",
-	"epsg": "node_modules/veldoffice-js/src/proj4js.org/epsg",
-	"leaflet": "node_modules/veldoffice-js/src/leafletjs.com"
+	"proj4": veldoffice_js + "/proj4js.org/proj4-src",
+	"epsg": veldoffice_js + "/proj4js.org/epsg",
+	"leaflet": veldoffice_js + "/leafletjs.com"
 }});
 
 define("app/hotkeys", ["util/HotkeyManager"], function(HKM) {

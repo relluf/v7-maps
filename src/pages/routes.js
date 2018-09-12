@@ -13,6 +13,9 @@ define(function(require) {
 		return { path: path, componentUrl: "pages/" + url + ".html" };
 	}
 	function component(path, component) {
+		if(component.templates && !component.template) {
+			component.template = component.templates.page;
+		}
 		if(component.bindings) {
 			component.on = component.on || {};
 			var pageInit = component.on.pageInit;

@@ -36,22 +36,14 @@ return {
 		}
 	},
 	
-	"Foto": {
-		".factories/": {
-			"title": function() {
-				return "<img class='Foto-thumb' src='/office-rest/action/images/thumb?id=" + this.id + "'>";
-			},
-			"src.thumb": function() {
-				var tag = new Date(this.modified || Date.now()).getTime();
-				return "/office-rest/action/images/thumb?" + tag + "&id=" + this.id;
-			},
-			"src": function() {
-				var tag = new Date(this.modified || Date.now()).getTime();
-				return "/office-rest/action/images/foto?" + tag + "&id=" + this.id;
-			}
+	"timestamp.factories/": {
+		"format": function(type, factory, format) {
+			var moment = require("moment"), dt = this;
+			if(!(dt instanceof Date)) dt = new Date(dt);
+			return moment(dt).format(format);
 		}
 	},
-	
+
 	"Veldoffice":									".",
 	
 	"Anchor": {
@@ -101,6 +93,21 @@ return {
 		".factories/": {  // <<< MODEL
 			"title": function() {
 				return String.format("%s, %s", this.code, js.get("type.naam", this));
+			}
+		}
+	},
+	"Foto": {
+		".factories/": {
+			"title": function() {
+				return "<img class='Foto-thumb' src='/office-rest/action/images/thumb?id=" + this.id + "'>";
+			},
+			"src.thumb": function() {
+				var tag = new Date(this.modified || this.created || Date.now()).getTime();
+				return "/office-rest/action/images/thumb?" + tag + "&id=" + this.id;
+			},
+			"src": function() {
+				var tag = new Date(this.modified || this.created || Date.now()).getTime();
+				return "/office-rest/action/images/foto?" + tag + "&id=" + this.id;
 			}
 		}
 	}

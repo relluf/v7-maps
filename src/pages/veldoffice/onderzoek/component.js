@@ -4,6 +4,7 @@ define(function(require) {
 	
 	var template = require("template7!./template.html");
 	var anchor_tmpl = require("template7!./anchor-template.html");
+	var fotos = require("../fotos/component");
 	var Session = require("veldoffice/Session");
 	var EM = require("veldoffice/EM");
 	var on = require("on");
@@ -16,7 +17,6 @@ define(function(require) {
 		var anchors = (menu.anchors || []);
 		return anchors.find(_ => _.key === key && _.path === path);
 	}
-	
 	function getData(e, onderzoek) {
 		var data = js.get("_views.v7-export", onderzoek);
 		if(!data) {
@@ -44,6 +44,27 @@ define(function(require) {
 
 	return {
 		bindings: {
+			".list.fotos click": function(e) {
+				var key = js.get("route.query.key", e.target.up(".page").f7Page);
+				var onderzoek = EM.get("Onderzoek", key);
+				
+				var li = e.target.up("li");
+				var img = li.down("img");
+				var f = locale("Foto.factories/src");
+				var photos = (onderzoek.fotos || []).map(function(foto) {
+					return { url: f.apply(foto, []), 
+						caption: String.format("%H", foto.omschrijving) };
+				});
+				var index = Array.from(li.parentNode.childNodes).indexOf(li);
+				var pb = f7a.photoBrowser.create({
+					type: "popup",
+					photos: photos,
+					renderNavbar: function() {
+						return fotos.templates.navbar({pb: pb}); //this?
+					},
+				});
+				pb.open(index);
+			},
 			".ptr-content ptr:refresh": function(e) {
 				setTimeout(() => f7a.ptr.done(e.target), 1000);
 			},
@@ -77,6 +98,15 @@ define(function(require) {
 				var key = js.get("detail.router.currentRoute.query.key", e);
 				var onderzoek = EM.get("Onderzoek", key);
 				getData(e, onderzoek);
+				
+				f7a.virtualList.create({
+					el: e.target.qs(".list.fotos.virtual-list"),
+			        cache: !false,
+					items: EM.get("Onderzoek", key).fotos || [],
+			        itemTemplate: fotos.templates.infinite,
+			        height: 98,
+			        cols: 4
+				});
 			} 
 		},
 		data: function() {
