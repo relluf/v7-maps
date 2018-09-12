@@ -164,8 +164,12 @@ define(function(require) {
 			".list.fotos click": function(e) {
 				var img = e.target.up("li").down("img");
 				var f = locale("Foto.factories/src");
-				var photos = arr.map(_ => f.apply(_, []));
-				var index = photos.indexOf(img.dataset.srcFullres);
+				var photos = arr.map(_ => ({
+					url: f.apply(_, []),
+					caption: _.omschrijving.replace("(", " (")
+				}));
+				var index = photos.findIndex(_ => _.url === img.dataset.srcFullres);
+				console.log(index, photos);
 				var pb = f7a.photoBrowser.create({
 					renderNavbar: function() {
 						return navbar_tmpl({pb: pb});	//this?
