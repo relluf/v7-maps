@@ -48,20 +48,21 @@ define(function(require) {
 				var key = js.get("route.query.key", e.target.up(".page").f7Page);
 				var onderzoek = EM.get("Onderzoek", key);
 				
-				var li = e.target.up("li");
-				var img = li.down("img");
-				var f = locale("Foto.factories/src");
+				var li = e.target.up("li"), img = li.down("img");
+				var f1 = locale("Foto.factories/src"), 
+					f2 = locale("Foto.factories/header.onderzoek");
 				var photos = (onderzoek.fotos || []).map(function(foto) {
-					return { url: f.apply(foto, []), 
-						caption: String.format("%H", foto.omschrijving) };
+					return { url: f1.apply(foto, []), 
+						caption: String.format("%H", f2.apply(foto, [])) };
 				});
 				var index = Array.from(li.parentNode.childNodes).indexOf(li);
 				var pb = f7a.photoBrowser.create({
 					type: "popup",
 					photos: photos,
+					// backLinkText: "&nbsp;",
 					renderNavbar: function() {
 						return fotos.templates.navbar({pb: pb}); //this?
-					},
+					}
 				});
 				pb.open(index);
 			},
@@ -103,7 +104,7 @@ define(function(require) {
 					el: e.target.qs(".list.fotos.virtual-list"),
 			        cache: !false,
 					items: EM.get("Onderzoek", key).fotos || [],
-			        itemTemplate: fotos.templates.infinite,
+			        itemTemplate: fotos.templates.infinite_onderzoek,
 			        height: 98,
 			        cols: 4
 				});

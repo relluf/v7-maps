@@ -110,8 +110,13 @@ return {
 				return "/office-rest/action/images/foto?" + tag + "&id=" + this.id;
 			},
 			"header": function() {
-				return (this.omschrijving || "").split("(").shift().replace(", onderzoek", "").replace(", meetpunt", "");
-				// return s.length > 1 ? s[1].split("(").shift() : "";
+				return (this.omschrijving || "").split("(").shift()
+					.replace(", onderzoek", "").replace(", meetpunt", "");
+			},
+			"header.onderzoek": function() {
+				// remove onderzoek.projectcode from omschrijving
+				var projectcode = js.get("onderzoek.projectcode", this);
+				return (this.omschrijving || "").substring(projectcode.length + 2).replace("(", "(");
 			}
 		}
 	}

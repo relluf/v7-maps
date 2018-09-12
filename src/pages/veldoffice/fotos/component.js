@@ -1,6 +1,7 @@
 define(function(require) {
 	
 	var infinite_tmpl = require("template7!./infinite-template.html");
+	var infinite_onderzoek_tmpl = require("template7!./infinite-onderzoek-template.html");
 	var navbar_tmpl = require("template7!./photo-browser-navbar.html");
 	var template = require("text!./template.html");
 	var module = require("module");
@@ -123,6 +124,7 @@ define(function(require) {
 	return { 
 		templates: {
 			infinite: infinite_tmpl,
+			infinite_onderzoek: infinite_onderzoek_tmpl,
 			navbar: navbar_tmpl,
 			page: template
 		},
@@ -175,7 +177,6 @@ define(function(require) {
 						return navbar_tmpl({pb: pb});	//this?
 					},
 					type: "popup",
-					// theme: "dark",
 					photos: photos
 				});
 				pb.open(index);
