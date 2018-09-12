@@ -1,15 +1,17 @@
 define(function(require) {
 	
 	var infinite_tmpl = require("template7!./infinite-template.html");
+	var navbar_tmpl = require("template7!./photo-browser-navbar.html");
 	var template = require("text!./template.html");
 	var module = require("module");
-	
+
 	var Session = require("veldoffice/Session");
 	var EM = require("veldoffice/EM");
 	var moment = require("moment");
 
 	var ATTRIBUTES = [
-		"id", "onderzoek.id onderzoek", "modified"
+		"id", "onderzoek.id onderzoek", "entityId", "created", 
+		"omschrijving", "type"
 	];
 	var ITEM_HEIGHT = 98;
 	var COLS = 4;
@@ -65,7 +67,7 @@ define(function(require) {
 		return Promise.all([
 			EM.query("Foto", ATTRIBUTES, {
 					page: [page, PAGE_SIZE, pager],
-					orderBy: "modified desc"
+					orderBy: "created desc"
 				})
 		]).then(function(results) {
 			return results[0];
@@ -79,10 +81,6 @@ define(function(require) {
 		}
 
 		return queryPage(page_current).then(function(res) {
-			res.forEach(_ => { 
-				_.page = page_current; 
-				_.modified_moment = moment(_.modified).calendar();
-			});
 			arr.splice.apply(arr, [arr.length, 0].concat(res));
 			return res;
 		});
@@ -94,10 +92,10 @@ define(function(require) {
 	function getMostRecentModified() {
 		var callee = getMostRecentModified;
 		if(!callee.promise) {
-			callee.promise = EM.query("Foto", "max:modified")
+			callee.promise = EM.query("Foto", "max:created")
 				.then(function(obj) {
 					obj = obj[0] || {};
-					return (mostRecent_modified = new Date(obj['max:modified']).getTime());
+					return (mostRecent_modified = new Date(obj['max:created']).getTime());
 				});
 		}
 		return callee.promise;
@@ -106,20 +104,9 @@ define(function(require) {
 		getFirstPage(e).then(function() { 
 			var vl = f7a.virtualList.create({
 				el: e.target.qs(".virtual-list"),
-		    	// cache: true,
-		    	rowsAfter: 30,
-		    	rowsBefore: 10,
+		    	cache: false,
 		        items: arr,
 		        itemTemplate: infinite_tmpl,
-		        searchAll: function(query, items) {
-		            var found = [];
-		            for (var i = 0; i < items.length; i++) {
-		                if (query.trim() === '' || match(items[i], query)) {
-		                    found.push(i);
-		                }
-		            }
-		            return found;
-		        },
 		        height: ITEM_HEIGHT,
 		        cols: COLS
 		    });
@@ -134,6 +121,11 @@ define(function(require) {
 	}
 	
 	return { 
+		templates: {
+			infinite: infinite_tmpl,
+			navbar: navbar_tmpl,
+			page: template
+		},
 		bindings: {
 			".infinite-scroll-content infinite": function(e) {
 				var page = e.target.up(".page");
@@ -175,14 +167,16 @@ define(function(require) {
 				var photos = arr.map(_ => f.apply(_, []));
 				var index = photos.indexOf(img.dataset.srcFullres);
 				var pb = f7a.photoBrowser.create({
-					type: "standalone",
-					theme: "dark",
-					photos: photos,
-					backLinkText: "",
-					navbarOfText: locale("Foto.navbarOfText")
+					renderNavbar: function() {
+						return navbar_tmpl({pb: pb});	//this?
+					},
+					type: "popup",
+					// theme: "dark",
+					photos: photos
 				});
 				pb.open(index);
 			}
 		},
-		template: template, on: { pageInit: pageInit } };
+		// template: template -> templates.page, 
+		on: { pageInit: pageInit } };
 });
