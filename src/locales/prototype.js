@@ -108,6 +108,10 @@ return {
 			"src": function() {
 				var tag = new Date(this.modified || this.created || Date.now()).getTime();
 				return "/office-rest/action/images/foto?" + tag + "&id=" + this.id;
+			},
+			"header": function() {
+				return (this.omschrijving || "").split("(").shift().replace(", onderzoek", "").replace(", meetpunt", "");
+				// return s.length > 1 ? s[1].split("(").shift() : "";
 			}
 		}
 	}
