@@ -181,7 +181,12 @@
 			</div>
 			<div id="tab-investigation-photos" class="tab">
 				<div class="block"></div>
+				{{#js_if "this.fotos && this.fotos.length"}}
 				<div class="list fotos virtual-list media-list"></div>
+				{{/js_if}}
+				{{#js_if "!(this.fotos && this.fotos.length)"}}
+				<div class="block"><p>{{l "Onderzoek.nophotos-label"}}</p></div>
+				{{/js_if}}
 			</div>
 		</div>
 	</div>

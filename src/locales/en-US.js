@@ -70,11 +70,12 @@ define(function() { return {
 	"Scan": {
 			"/New.button":							"scan"
 	},
-	
+
 	"Onderzoek": {
 		"":											"Investigation",
 		".plural":									"Investigations",
 		".subtitle":								"List of all investigation projects",
+		".nophotos-label":							"Er zijn nog geen foto's aan dit onderzoek toegevoegd. U kunt de eerste zijn.",
 		// ".subtitle":								"Contouren van veldoffice.nl",
 		// "-naam":									"Name",
 		// "-status":									"Status",

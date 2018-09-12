@@ -111,7 +111,7 @@ return {
 			},
 			"header": function() {
 				return (this.omschrijving || "").split("(").shift()
-					.replace(", onderzoek", "").replace(", meetpunt", "");
+					.replace(", onderzoek", "").replace(", meetpunt", ", ");
 			},
 			"header.onderzoek": function() {
 				// remove onderzoek.projectcode from omschrijving
