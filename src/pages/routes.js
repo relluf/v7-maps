@@ -3,6 +3,7 @@ define(function(require) {
 	var menu = require("pages/v7/menu/component");
 	var menufix = require("pages/v7/menu-fix/component");
 	var map = require("pages/v7/map/component");
+	var settings = require("pages/v7/settings/component");
 
 	var fotos = require("pages/veldoffice/fotos/component");	
 	var onderzoeken = require("pages/veldoffice/onderzoeken/component");
@@ -40,6 +41,7 @@ define(function(require) {
 	return [
 		component("/map", map ),
 		component("/menu", menu ),
+		component("/settings", settings ),
 		component("/menu-fix", menufix ),
 		
 		url("/account", "veldoffice/account"),
