@@ -59,13 +59,14 @@ define("framework7/plugins/auto-back-title", function() {
 	};
 
     /*- Link title of back button to title of page */
+    var previous;
     document.addEventListener("page:mounted", function (e) {
-    	
     	if(e.detail.direction !== "forward") {
-    		return;
+			console.log("page:mounted - no direction", e.detail);
+    	} else {
+    		previous = e.detail.pageFrom;
     	}
-    	
-    	var previous = e.detail.pageFrom;
+
     	if(!previous) return;
     	
     	var current = e.detail;
