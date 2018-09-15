@@ -212,6 +212,8 @@ define("blocks-js", ["blocks/Blocks", "blocks/Factory"], function(Blocks, Factor
 	return Blocks;
 });
 
+window.locale_base = "locales/";
+
 require(["moment", "moment/locale/nl", "locale!en-US", "locale!du-NL"], function(moment, nl) {
 	
     moment.locale("nl");
