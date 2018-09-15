@@ -1,0 +1,34 @@
+<div class="page">
+	<div class="navbar">
+	    <div class="navbar-inner">
+	        <div class="left sliding">
+				<a href="." class="back link"> <i class="icon icon-back"></i><span class="ios-only">{{l "Back"}}</span></a>
+	        </div>
+	        <div class="center sliding title">{{l "Settings"}}</div>
+	        <div class="right">&nbsp;
+	            <!--<a class="link close">-->
+	            <!--	<i class="icon icon-forward" style="_pointer-events: none;"></i>-->
+	            <!--</a>-->
+	        </div>
+	    </div>
+	</div>
+	<div class="page-content hide-navbar-on-scroll ptr-content">
+	    <div class="ptr-preloader">
+			<div class="preloader"></div>
+			<div class="ptr-arrow"></div>
+	    </div>
+		<div class="block center"></div>
+		<div class="block-title">{{l "Settings"}}</div>
+		<div class="list"><ul>
+			<li><a href="/settings/language" class="item-content item-link">
+				<div class="item-media">
+					<i class="fa fa-fw fa-globe menu-icon bg-color-blue"></i>
+				</div>
+				<div class="item-inner">
+					<div class="item-title">{{l "Language"}}</div>
+					<div class="item-after">{{js "window.locale('Language.' + locale.loc)"}}</div>
+				</div>
+			</a></li>
+		</ul></div>
+	</div>
+</div>
