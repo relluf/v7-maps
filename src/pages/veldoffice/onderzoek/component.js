@@ -139,7 +139,8 @@ define(function(require) {
 			loadData(onderzoek, this.$route);
 			return js.mixIn({
 				loading: isLoading(onderzoek),
-				anchored: isAnchored(this.$route)
+				anchored: isAnchored(this.$route),
+				unique: Date.now()
 			}, onderzoek);
 		},
 		template: template,
