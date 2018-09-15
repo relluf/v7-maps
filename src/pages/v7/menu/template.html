@@ -17,8 +17,8 @@
 			<div class="preloader"></div>
 			<div class="ptr-arrow"></div>
 	    </div>
-		<div class="block center"></div>
 		<div class="center">
+	    	<div>&nbsp;</div>
 			<div class="title">
 				<a href="/account" class="link avatar"><i class="fa fa-user-circle"></i></a>
 			</div>
@@ -36,8 +36,8 @@
 			<a href="" class="button button-round scan flex2">{{l "Meetpunt/New.button"}}</a>
 			<span class="flex1"></span>
 		</div>		
-		
-		<div class="block-title">{{l "Veldoffice"}}</div>
+
+		<div class="block-title">{{l "Collections"}}</div>
 		<div class="list"><ul>
 			<li><a href="/veldoffice/onderzoeken" class="item-content item-link">
 				<div class="item-media">
@@ -61,7 +61,7 @@
 				</div>
 			</a></li>
 		</ul></div>
-		<div class="list"><ul>
+		<div class="list display-none"><ul>
 			<li><a href="/menu/menu" class="item-content item-link">
 				<div class="item-media">
 					<i class="fa fa-fw fa-map-marker menu-icon bg-color-green "></i>
@@ -75,24 +75,24 @@
 			</a></li>
 		</ul></div>
 		
+		<!--<div class="block-title">{{l "Settings"}}</div>-->
+		<div class="list"><ul>
+			<li><a href="/settings" class="item-content item-link">
+				<div class="item-media">
+					<i class="fa fa-fw fa-gear menu-icon bg-color-blue"></i>
+				</div>
+				<div class="item-inner">
+					<div class="item-title">{{l "Settings"}}</div>
+				</div>
+			</a></li>
+		</ul></div>
+		
 		{{#if anchors.length}}
 		<div class="block-title">{{l "Anchor.plural.header"}}</div>
 		<div class="list media-list onderzoek"><ul> {{#each anchors}} {{l ">" this "Anchor" "menu-anchors-li"}} {{/each}} 
 		</ul></div>
 		{{/if}}
 
-		<div class="block-title">{{l "Settings"}}</div>
-		<div class="list"><ul>
-			<li><a href="/settings/language" class="item-content item-link">
-				<div class="item-media">
-					<i class="fa fa-fw fa-globe menu-icon bg-color-blue"></i>
-				</div>
-				<div class="item-inner">
-					<div class="item-title">{{l "Language"}}</div>
-					<div class="item-after">{{js "window.locale('Language.' + locale.loc)"}}</div>
-				</div>
-			</a></li>
-		</ul></div>
 <!--	
 		<div class="block-title">{{l "Stream"}}</div>
 		<div class="list stream"></div>

@@ -73,7 +73,7 @@ define(function(require) {
 				$$(e.target).toggleClass("button-fill");
 			},
 			".button.scan click": function(e) {
-				V7.scanCode({flash:"off"}, function() { console.log("ok", arguments) }, function() { console.log("err", arguments) })
+				V7.scanCode({flash:"off"}, function() { console.log("ok", arguments) }, function() { console.log("err", arguments) });
 				$$(e.target).toggleClass("button-fill");
 			},
 			
