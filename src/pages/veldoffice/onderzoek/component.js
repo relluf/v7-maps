@@ -1,45 +1,66 @@
 define(function(require) {
 
 	var URL = "/office-rest/action/profielen?view=V7-export&id=";
-	
+
 	var template = require("template7!./template.html");
 	var anchor_tmpl = require("template7!./anchor-template.html");
 	var fotos = require("../fotos/component");
 	var Session = require("veldoffice/Session");
 	var EM = require("veldoffice/EM");
 	var on = require("on");
-	var module = require("module");
-	
-	var menu = V7.objects.get("/menu");
-	
+
 	function isAnchored(route) {
+		var menu = V7.objects.get("/menu");
 		var key = route.query.key, path = route.path;
 		var anchors = (menu.anchors || []);
-		return anchors.find(_ => _.key === key && _.path === path);
+		return anchors.find(_ => _.url === route.url);
 	}
-	function getData(e, onderzoek) {
-		var data = js.get("_views.v7-export", onderzoek);
-		if(!data) {
-			js.set("_views.v7-export", data = Session.get(URL + onderzoek.id)
-				.then(function(resp) {
-					EM.processWalkResult2(resp);
-					return js.set("_views.v7-export", resp, onderzoek);
-				}), onderzoek
-			);
-		}
-		
-		if(data instanceof Promise) {
-			$$(e.target).addClass("loading");
-			var cr = f7a.views.left.router.currentRoute;
-			data.then((res) => {
-				$$(e.target).removeClass("loading");	
-				if(cr === f7a.views.left.router.currentRoute) {
-					// only refresh page if still current
-					f7a.views.left.router.refreshPage();
-				}
-				return res;
-			});
-		}
+	function isLoading(onderzoek) {
+		var root = getNestedDoc(onderzoek).root;
+		return root === undefined || root instanceof Promise;
+	}
+	function isExpired(onderzoek, doc) {
+		var o = new Date(onderzoek.modified).getTime();
+		var d = new Date(doc.modified || 0).getTime();
+		return o > d;
+	}
+	
+	function getNestedDoc(onderzoek) {
+		return V7.objects.get(String.format("/veldoffice/onderzoek/%s/docs/V7-export", 
+			onderzoek.id));
+	}
+	function dateAsString(date) {
+		return typeof date === "string" ? date : (new Date(date)).toJSON();
+	}
+	
+	function loadData(onderzoek, currentRoute) {
+		var doc = getNestedDoc(onderzoek);
+		return V7.objects.refresh(doc).then(function() { 
+			if(!doc.root || isExpired(onderzoek, doc)) {
+				var url = URL + onderzoek.id + "&" + Date.now();
+				return (doc.root = Session.get(url).then(function(resp) {
+					doc.root = resp;
+					doc.modified = new Date();
+					V7.objects.save(doc, { delay: false }).then(function() {
+						EM.processWalkResult2(resp);
+						doc.$$loaded = true;
+						currentRoute && setTimeout(function() {
+							V7.router.refresh(currentRoute.url);
+						}, 500);
+					});
+					return doc;
+				}));
+			} else if(doc.root instanceof Promise) {
+				return doc.root;
+			} else if(doc.root && !doc.$$loaded) {
+				EM.processWalkResult2(doc.root);
+				doc.$$loaded = true;
+				currentRoute && setTimeout(function() {
+					V7.router.refresh(currentRoute.url);
+				}, 500);
+			}
+			return doc;
+		});
 	}
 
 	return {
@@ -75,6 +96,7 @@ define(function(require) {
 				V7.showOnMap("Onderzoek", EM.get("Onderzoek", key));
 			},
 			".button.anchor click": function(e) {
+				var menu = V7.objects.get("/menu");
 				var comp = e.target.up(".page").f7Component;
 				var route = e.target.up(".page").f7Page.route;
 				var index = isAnchored(route);
@@ -91,19 +113,20 @@ define(function(require) {
 				V7.objects.save(menu).then(function() {
 					V7.router.refresh("/menu");
 				});
-				V7.router.refresh("/veldoffice/onderzoek");
+				
+				$$(e.target.meOrUp("a")).toggleClass("button-fill");
 			}
 		},
 		on: { 
 			pageInit(e) {
+				var currentRoute = js.get("detail.router.currentRoute", e);
 				var key = js.get("detail.router.currentRoute.query.key", e);
 				var onderzoek = EM.get("Onderzoek", key);
-				getData(e, onderzoek);
 				
 				f7a.virtualList.create({
 					el: e.target.qs(".list.fotos.virtual-list"),
-			        cache: !false,
-					items: EM.get("Onderzoek", key).fotos || [],
+			        cache: false,
+					items: onderzoek.fotos || [],
 			        itemTemplate: fotos.templates.infinite_onderzoek,
 			        height: 98,
 			        cols: 4
@@ -111,11 +134,16 @@ define(function(require) {
 			} 
 		},
 		data: function() {
+			var onderzoek = EM.get("Onderzoek", this.$route.query.key);
+			loadData(onderzoek, this.$route);
 			return js.mixIn({
+				loading: isLoading(onderzoek),
 				anchored: isAnchored(this.$route)
-			}, EM.get("Onderzoek", this.$route.query.key));
+			}, onderzoek);
 		},
-		template: template
+		template: template,
+		
+		load_v7_export: loadData
 	};
 	
 });

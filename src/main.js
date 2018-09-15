@@ -50,6 +50,10 @@ define(function(require) {
 
 	/* Make life easier */
 	var qsa = Element.prototype.querySelectorAll;
+	Element.prototype.meOrUp = function(nodeName) {
+		if(this.nodeName.toLowerCase() === nodeName.toLowerCase()) return this;
+		return this.up(nodeName);
+	};
 	Element.prototype.up = function(selector) {
 		
 		if(arguments.length === 0) {
@@ -142,7 +146,9 @@ define(function(require) {
 	// initialize left when session info is available
 	Session.info().then(function(res) {
 		V7.objects.get("/menu").session = res;
-		V7.objects.save("/menu"); // TODO Hmmz, could this be automatic? pagein/out/refresh
+		if(V7.objects.changed("/menu")) {
+			V7.objects.save("/menu"); // TODO Hmmz, could this be automatic? pagein/out/refresh
+		}
 	});
 		
 	Session.refresh().then(function() {

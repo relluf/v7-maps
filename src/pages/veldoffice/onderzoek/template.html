@@ -1,4 +1,4 @@
-<div class="page onderzoek" data-key="{{id}}">
+<div class="page onderzoek {{#if loading}}loading{{/if}}" data-key="{{id}}">
 	<div class="navbar">
 	    <div class="navbar-inner">
 	        <div class="left sliding">
@@ -70,6 +70,19 @@
 								{{/each}}
 							</ul></div>
 						</div>
+					</li>
+					<li class="link-item">
+						<a class="item-content item-link">
+							<div class="item-media">
+								<!--<i class="fa fa-fw fa-user-circle menu-icon bg-orange "></i>-->
+							</div>
+							<div class="item-inner">
+								<div class="item-title-row">
+									<div class="item-title">{{l "Onderzoek-fotos.label"}}</div>
+								</div>
+								<div class="item-after">{{js "this.fotos.length"}}</div>
+							</div>
+						</a>
 					</li>
 					{{#if x}}
 					<li class="accordion-item">

@@ -103,7 +103,7 @@ define(function(require) {
 		// e is pageInit-event
 		if(page_current === undefined) {
 			var list = f7a.virtualList.get($$(".virtual-list", e.target));
-			page_current = list ? list.listHeight / ITEM_HEIGHT / PAGE_SIZE : 0;
+			page_current = list ? parseInt(list.listHeight / ITEM_HEIGHT / PAGE_SIZE) : 0;
 		}
 
 		return queryPage(page_current).then(function(res) {

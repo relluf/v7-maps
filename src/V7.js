@@ -10,6 +10,8 @@ define(function(require) {
 	var PouchDB = require("pouchdb");
 	var moment = require("moment");
 	var on = require("on");
+	
+	var Onderzoek = require("pages/veldoffice/onderzoek/component");
 
 	var onderzoek_popup_tmpl = require("template7!pages/veldoffice/onderzoek/map-popup-template.html");
 	var meetpunt_popup_tmpl = require("template7!pages/veldoffice/meetpunt/map-popup-template.html");
@@ -50,6 +52,16 @@ define(function(require) {
 			}
 		});
 	}
+	
+	function v7_objects_make_put(object) {
+		var obj = {};
+		for(var k in object) {
+			if(k.indexOf("$$") !== 0) {
+				obj[k] = object[k];
+			}
+		}
+		return obj;
+	}
 
 	return {
 		locale: {},	
@@ -59,7 +71,7 @@ define(function(require) {
 			}
 		},
 		
-		// Small wrapper around pouch'd objects
+	//	Objects - small wrapper around pouch'd objects
 		objects: {
 			idx: v7_objects_idx, listeners: v7_objects_listeners,
 			db: v7_objects,
@@ -146,7 +158,7 @@ define(function(require) {
 					object.hash_ = hash;
 					console.log("V7.objects.save", object._id, object);
 					return new Promise(function(resolve, reject) {
-						v7_objects.put(object, function(err, result) {
+						v7_objects.put(v7_objects_make_put(object), function(err, result) {
 							if(err) reject(err);
 							if(result && result.ok === true) {
 								object._rev = result.rev;
@@ -155,12 +167,15 @@ define(function(require) {
 						});
 					});
 				} else {
-					console.log("V7.objects.save", object._id, "hash equals");
+					console.log("V7.objects.save skipped", object._id, "because hash equals");
 				}
 				
 				return Promise.resolve(object);
 			},
 			changed: function(object) {
+				if(typeof object === "string") {
+					return V7.objects.changed(V7.objects.get(object));
+				}
 				return object.hash_ !== calcHash(object);
 			},
 			on: function(object, name, callback) {
@@ -201,27 +216,29 @@ define(function(require) {
 			get: function(entity, key) {
 				
 			},
-			
 			query: function(entity, attributes, criteria) {
 				
 			}
 		},
 		router: {
 			navigate: function() {},
-			refresh: function(path) {
+			refresh: function(url) {
 				if(!window.f7a) return;
-				// Refreshes -path- in all views
+				// Refreshes -url- in all views
 				["main", "left"/*, "detail"*/].forEach(function(view) {
 					var router = f7a.views[view].router;
-					if(router.currentRoute.path === path) {
+					if(router.currentRoute.url === url) {
+						console.log("refreshing", view, url);
 						router.refreshPage();
 					}
 				});
 			}
 		},
-		
+
 		util: {
-			nextTick: function() {}
+			nextTick: function(f, ms) {
+				setTimeout(f, ms || 0);
+			}
 		},
 		input: {
 			takePhoto: function() {
@@ -307,8 +324,9 @@ define(function(require) {
 				return map_vcl.vars("map");
 		    },
 		    mapOnderzoek: function(onderzoek) {
-				var data = js.get("_views.v7-export", onderzoek);
-				return Promise.resolve(data).then(function(data) {
+		    	// TODO this should be moved to onderzoek/component
+		    	return Onderzoek.load_v7_export(onderzoek).then(function(doc) {
+		    		var data = doc.root;
 					var meetpunten = Object.keys(data.instances.Meetpunt)
 						.map(_ => EM.get("Meetpunt", _))
 						.filter(_ => !isNaN(parseFloat(_.xcoord)) && 
@@ -431,7 +449,7 @@ define(function(require) {
 			}
 		},
 
-	//	General Routing
+	//	Routing
 		navigate: function(view, path, opts) {
 			var router = f7a.views[view].router;
 			if(router.currentRoute.path !== path) {
@@ -451,7 +469,7 @@ define(function(require) {
 	
 	//	Util
 		nextTick: function(f, ms) {
-			setTimeout(f, ms || 0);
+			return V7.util.nextTick(f, ms);
 		},
 		
 		sessionNeeded: function() {
