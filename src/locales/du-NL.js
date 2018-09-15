@@ -82,6 +82,7 @@ define(function() { return {
 		"/New.button":								"onderzoek",
 		".subtitle":								"Contouren van veldoffice.nl",
 		".plural":									"Onderzoeken",
+		".nogeodata-alert":							"Dit onderzoek bevat nog geen geografische informatie.",
 		".nophotos-label":							"Hier worden de foto's van het onderzoek getoond, maar er zijn nog geen foto's aan dit onderzoek toegevoegd.",
 		".search-label":							"Alle onderzoeken, recent gewijzigde eerst. Middels het zoekveld hierboven kunt u de lijst filteren overeenkomstig de attributen naam, projectcode en/of bedrijf.",
 		"-naam.label":								"Naam",

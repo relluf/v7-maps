@@ -152,10 +152,10 @@ define(function(require) {
 
 			EM.query("Onderzoek", "id,count:meetpunten.id count_meetpunten_with_coords", { 
 				where: ["and", 
-					["or", ["contains", "naam", term], ["contains", "projectcode", term]],
-					["lt", "modified", Date.now()], // TODO
 					["isnotnull", "meetpunten.xcoord"], 
-					["isnotnull", "meetpunten.ycoord"]
+					["isnotnull", "meetpunten.ycoord"],
+					["or", ["contains", "naam", term], ["contains", "projectcode", term]],
+					["lt", "modified", Date.now()] // TODO
 				],
 				// page: [page, PAGE_SIZE, pager_coords],
 				orderBy:"modified desc", 

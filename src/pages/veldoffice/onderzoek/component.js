@@ -40,21 +40,22 @@ define(function(require) {
 				var url = URL + onderzoek.id + "&" + Date.now();
 				return (doc.root = Session.get(url).then(function(resp) {
 					doc.root = resp;
-					doc.modified = new Date();
-					V7.objects.save(doc, { delay: false }).then(function() {
+					doc.modified = onderzoek.modified || new Date();
+					return V7.objects.save(doc, { delay: false }).then(function() {
 						EM.processWalkResult2(resp);
 						doc.$$loaded = true;
 						currentRoute && setTimeout(function() {
 							V7.router.refresh(currentRoute.url);
 						}, 500);
+						return doc;
 					});
-					return doc;
 				}));
 			} else if(doc.root instanceof Promise) {
 				return doc.root;
 			} else if(doc.root && !doc.$$loaded) {
 				EM.processWalkResult2(doc.root);
 				doc.$$loaded = true;
+				console.log(onderzoek.modified, "vs", doc.modified);
 				currentRoute && setTimeout(function() {
 					V7.router.refresh(currentRoute.url);
 				}, 500);
