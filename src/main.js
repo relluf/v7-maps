@@ -115,7 +115,7 @@ define(function(require) {
 		panel: { swipe: "left" },
 		panels3d: { enabled: true },
 		routes: routes,
-		theme: "ios"
+		theme: (location.search.split('laf=')[1]||'').split('&')[0] || "auto"
 	});    	
 	var mainView = app.views.main;
 	var leftView = app.views.left = app.views.create(".view-left", { 
