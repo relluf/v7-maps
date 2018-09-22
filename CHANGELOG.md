@@ -1,3 +1,12 @@
+### 2018-09-22
+- Developing marker placement
+- Changing some icons
+- 
+
+### 2018-09-19
+- Framework7 Android theming enabled 
+- Full screen home screen web app enabled
+
 ### 2018-09-14
 - Further developing persistence layer (`V7.objects`)
 - Caching downloads (eg. v7-export) for faster reloading, struggling with PouchDB performance on iPhone 6s?

@@ -1,4 +1,5 @@
-var veldoffice_js = "node_modules/veldoffice-js/src";
+// var veldoffice_js = "node_modules/veldoffice-js/src";
+var veldoffice_js = "/home/Workspaces/veldapps.com/veldoffice-js/src";
 require.config({ paths: {
 	"backbone": "node_modules/backbone/backbone",
 	"underscore": "node_modules/underscore/underscore",
@@ -193,7 +194,7 @@ define("template7", ["framework7"], function() {
 	};
 });
 
-define("font-awesome", ["stylesheet!node_modules/font-awesome/css/font-awesome.css"], function(fa) {
+define("font-awesome", ["stylesheet!node_modules/@fortawesome/fontawesome-free/css/all.css"], function(fa) {
 	return fa;
 });
 

@@ -52,7 +52,6 @@ define(function(require) {
 			}
 		});
 	}
-	
 	function v7_objects_make_put(object) {
 		var obj = {};
 		for(var k in object) {
@@ -264,6 +263,9 @@ define(function(require) {
 				
 				$$(".leaflet-control-locate a").click();
 			},
+			placeMarker: function() {
+				
+			}
 		},
 		menu: {
 			refresh: function() {}
