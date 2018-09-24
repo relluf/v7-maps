@@ -115,7 +115,7 @@ return {
 			},
 			"header.onderzoek": function() {
 				// remove onderzoek.projectcode from omschrijving
-				var projectcode = js.get("onderzoek.projectcode", this);
+				var projectcode = js.get("onderzoek.projectcode", this) || "";
 				return (this.omschrijving || "").substring(projectcode.length + 2).replace("(", "(");
 			}
 		}

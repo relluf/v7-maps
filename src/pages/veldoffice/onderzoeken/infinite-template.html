@@ -8,9 +8,12 @@
 		<div class="item-title">{{naam}}&nbsp;</div> 
 		<div class="item-text">
 			<div>
-				<span class="chip methode">{{methode}}</span>
-				<div class="chip {{status.id}}"><div class="chip-label">{{status.name}}</div></div>
+				{{#if is_anchored}}<div class="chip anchored"><div class="chip-label"><i class="fa fa-anchor"></i></div></div>{{/if}}
+				{{#unless is_downloaded}}<div class="chip not-downloaded"><div class="chip-label"><i class="fa fa-cloud"></i></div></div>{{/unless}}
+				{{#if is_downloaded}}<div class="chip downloaded"><div class="chip-label"><i class="fa fa-chevron-circle-down"></i></div></div>{{/if}}
 				{{#if count_meetpunten_with_coords}}<div class="chip show-on-map"><div class="chip-label">{{l "Onderzoek-contour/Map.short"}}</div></div>{{/if}}
+				<span class="chip methode">{{methode}}</span>
+				<div class="chip status {{status.id}}"><div class="chip-label">{{status.name}}</div></div>
 			</div>
 			<div class="item-summary">
 				<span title="{{count_fotos}} foto's">

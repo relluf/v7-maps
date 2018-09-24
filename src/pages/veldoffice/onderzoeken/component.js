@@ -77,6 +77,8 @@ define(function(require) {
 		load: pager.load,
 		save: pager.save
 	};
+	
+	var menu = V7.objects.get("/menu");
 
 	function queryPage(page) {
 		return Promise.all([
@@ -106,10 +108,17 @@ define(function(require) {
 			page_current = list ? parseInt(list.listHeight / ITEM_HEIGHT / PAGE_SIZE) : 0;
 		}
 
+		var anchoredKeys = menu.anchors.map(_ => parseInt(_.key, 10));
+		var mappedKeys = Object.keys(V7.objects.idx)
+			.filter(_ => _.endsWith("V7-export"))
+			.map(_ => parseInt(_.split("/")[3], 10));
+			
 		return queryPage(page_current).then(function(res) {
 			res.forEach(_ => { 
 				_.page = page_current; 
 				_.modified_moment = moment(_.modified).calendar();
+				_.is_anchored = anchoredKeys.indexOf(parseInt(_.id, 10)) !== -1;
+				_.is_downloaded = mappedKeys.indexOf(parseInt(_.id, 10)) !== -1;
 			});
 			arr.splice.apply(arr, [arr.length, 0].concat(res));
 			return res;
@@ -163,6 +172,15 @@ define(function(require) {
 			})
 			
 		]).then(function(values) {
+			var anchoredKeys = menu.anchors.map(_ => parseInt(_.key, 10));
+			var mappedKeys = Object.keys(V7.objects.idx)
+				.filter(_ => _.endsWith("V7-export"))
+				.map(_ => parseInt(_.split("/")[3], 10));
+				
+			values[0].forEach(_ => { 
+				_.is_anchored = anchoredKeys.indexOf(parseInt(_.id, 10)) !== -1;
+				_.is_downloaded = mappedKeys.indexOf(parseInt(_.id, 10)) !== -1;
+			});
 			return values[0];
 		});
 	}

@@ -20,6 +20,10 @@ body.ios { background-color: black; background: black; }
 /*.searchbar-inner { top: -6px; }*/
 
 .list.onderzoek {
+	
+	li.has-contour {}
+	li.is-anchored {}
+	
 	li:not(.has-meetpunten-with-coords):not(.has-contour) {
 		/* background-color: hsl(0, 100%, 96%); */
 	}
@@ -28,16 +32,19 @@ body.ios { background-color: black; background: black; }
 		white-space: nowrap;
 		font-size: 9pt;
 	}
-	.item-text .chip:not(.methode) {
-		float: right;
-	}
+
+	.chip.status { float: right; }
 	.chip.GEREED { background-color: #ec983f; color: white; font-weight: bold;}
-	.chip.RAPPORTAGE { background-color: #75b6ff; }
+	.chip.RAPPORTAGE { background-color: #75b6ff; color: white; font-weight: bold; }
 	.chip.LOPEND { background-color: #5acc5c; color: white; font-weight: bold;}
-	.chip.ARCHIEF { background-color: #a78383; }
-	.chip.FACTURATIE { background-color: #db1b1b; }
+	.chip.ARCHIEF { background-color: #a78383; color: white; font-weight:bold;}
+	.chip.FACTURATIE { background-color: #db1b1b; color: white; font-weight:bold;}
 	
-	.chip.show-on-map { margin-right: 4px; background-color: #007aff; color: white; font-weight: bold;}
+	.chip { margin-right: 2px; margin-right: 2px;}
+	.chip.anchored { background-color: #007aff; color: white; font-weight: bold; }
+	.chip.downloaded { background-color: #007aff; color: white; font-weight: bold; }
+	.chip.show-on-map { background-color: transparent; color: #007aff; font--weight: bold; border: 1px solid #007aff;}
+	.chip.not-downloaded { background-color: transparent; color: silver; border: 1px solid silver; }
 	.chip.methode { background-color: transparent; color: silver; border: 1px solid silver; }
 	
 	li .item-text { max-height: none; }

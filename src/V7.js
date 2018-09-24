@@ -380,7 +380,7 @@ define(function(require) {
 					onderzoek.contour.addTo(V7.map);
 	
 					var markers = onderzoek.meetpunt_markers = L.markerClusterGroup({
-						// disableClusteringAtZoom: 13,
+						disableClusteringAtZoom: 13,
 						// chunkedLoading: true,
 						// chunkDelay: 100,
 						// chunkProgress: function(processed, total, elapsed, layersArray) {
