@@ -3,7 +3,7 @@ var veldoffice_js = "/home/Workspaces/veldapps.com/veldoffice-js/src";
 require.config({ paths: {
 	"backbone": "node_modules/backbone/backbone",
 	"underscore": "node_modules/underscore/underscore",
-    "pouchdb": "bower_components/pouchdb/dist/pouchdb",
+    // "pouchdb": "bower_components/pouchdb/dist/pouchdb",
     // "argsarray": "node_modules/argsarray/index",
 	"jquery": "node_modules/jquery/dist/jquery",
     "less": "bower_components/less/dist/less",
@@ -192,6 +192,16 @@ define("template7", ["framework7"], function() {
 			});
 		}
 	};
+});
+
+define("pouchdb", [
+	"./bower_components/pouchdb/dist/pouchdb",
+    "./bower_components/pouchdb-find/dist/pouchdb.find"
+], function(PouchDB, Find) {
+
+	PouchDB.plugin(Find);
+
+	return PouchDB;
 });
 
 define("font-awesome", ["stylesheet!node_modules/@fortawesome/fontawesome-free/css/all.css"], function(fa) {

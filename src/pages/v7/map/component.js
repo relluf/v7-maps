@@ -7,6 +7,9 @@ define(function(require) {
 	var HE = require("util/HtmlElement");
 	var $$ = Dom7;
 
+	var Onderzoek = require("pages/veldoffice/onderzoek/component");
+	var EM = require("veldoffice/EM");
+
 	var on = {
 		pageInit(e) {
 			// $$(".swipe-handle.left", e.target).on("click", function() {
@@ -26,15 +29,48 @@ define(function(require) {
 					map.setParentNode(e.target.qs(".page-content"));
 					map.once("map-ready", function() {
 						V7.initializeMap(map);
+						
+					//	Load all anchored onderzoeken
+						var loaded = {};
+						V7.objects.fetch("/menu").then(function(menu) {
+							console.warn("Mapping anchors");
+							var anchors = menu.anchors;
+							anchors.forEach(function(anchor) {
+								if(anchor.path === "/veldoffice/onderzoek") {
+									var onderzoek = EM.get("Onderzoek", anchor.key);
+									Onderzoek.require_v7_export(onderzoek).then(function() {
+										V7.mapOnderzoek(onderzoek);
+										loaded[onderzoek._id] = true;
+									});
+								}	
+							});
+						});
+						
+						var selectors = {
+							onderzoek: { all: {_id: {$gte: '/veldoffice/onderzoek/', $lt:"/veldoffice/onderzoek/_"}}}
+						};
+						V7.objects.db.find({selector: selectors.onderzoek.all})
+							.then(_ => _.docs
+								.filter(_ => _._id.endsWith("V7-export"))
+								.filter(_ => loaded[_._id] === undefined)
+								.sort((i1, i2) => i1.savedAt_ < i2.savedAt_ ? -1 : 1)
+								.map(function(_) {
+									var key = _._id.split("/")[3];
+									var onderzoek = EM.get("Onderzoek", key);
+									Onderzoek.require_v7_export(onderzoek).then(function() {
+										V7.mapOnderzoek(onderzoek);
+									});
+								})
+							);
 					});
 				});
 		}
 	};
 
-var blueCircle = L.AwesomeMarkers.icon({
-    icon: 'circle',
-    markerColor: 'darkblue'
-  });
+	var blueCircle = L.AwesomeMarkers.icon({
+		icon: 'circle',
+		markerColor: 'darkblue'
+	});
   
 	return { 
 		on: on, 

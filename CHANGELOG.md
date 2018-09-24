@@ -1,7 +1,10 @@
+### 2018-09-24
+- Previously loaded investigations are loaded during startup (currently sorted by "savedAt_" of the corresponding PouchDB document)
+- That's right! Adding pouchdb.find to this mix. Now it's getting interesting
+
 ### 2018-09-22
 - Developing marker placement
 - Changing some icons
-- 
 
 ### 2018-09-19
 - Framework7 Android theming enabled 

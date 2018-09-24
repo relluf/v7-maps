@@ -9,14 +9,20 @@ define(function(require) {
 	var EM = require("veldoffice/EM");
 	var on = require("on");
 
+	function anchorIndex(route) {
+		var menu = V7.objects.get("/menu");
+		var key = route.query.key, path = route.path;
+		var anchors = (menu.anchors || []);
+		return anchors.findIndex(_ => _.url === route.url);
+	}
 	function isAnchored(route) {
 		var menu = V7.objects.get("/menu");
 		var key = route.query.key, path = route.path;
 		var anchors = (menu.anchors || []);
-		return anchors.find(_ => _.url === route.url);
+		return anchors.findIndex(_ => _.url === route.url) !== -1;
 	}
 	function isLoading(onderzoek) {
-		var root = getNestedDoc(onderzoek).root;
+		var root = getNestedDoc(onderzoek, "V7-export").root;
 		return root === undefined || root instanceof Promise;
 	}
 	function isExpired(onderzoek, doc) {
@@ -25,16 +31,21 @@ define(function(require) {
 		return o > d;
 	}
 	
-	function getNestedDoc(onderzoek) {
-		return V7.objects.get(String.format("/veldoffice/onderzoek/%s/docs/V7-export", 
-			onderzoek.id));
+	function getNestedDoc(onderzoek, name) {
+		var nested = String.format("/veldoffice/onderzoek/%s/docs/%s", onderzoek.id, name);
+		var r = V7.objects.get(nested);
+		if(r === undefined) {
+			console.log("getNestedDoc is undefined?");
+			r = V7.objects.get(nested); debugger;
+		}
+		return r;
 	}
 	function dateAsString(date) {
 		return typeof date === "string" ? date : (new Date(date)).toJSON();
 	}
 	
-	function loadData(onderzoek, currentRoute) {
-		var doc = getNestedDoc(onderzoek);
+	function refresh_v7_export(onderzoek, currentRoute) {
+		var doc = getNestedDoc(onderzoek, "V7-export");
 		return V7.objects.refresh(doc).then(function() { 
 			if(!doc.root || isExpired(onderzoek, doc)) {
 				var url = URL + onderzoek.id + "&" + Date.now();
@@ -55,7 +66,7 @@ define(function(require) {
 			} else if(doc.root && !doc.$$loaded) {
 				EM.processWalkResult2(doc.root);
 				doc.$$loaded = true;
-				console.log(onderzoek.modified, "vs", doc.modified);
+				// console.log(onderzoek.modified, "vs", doc.modified);
 				currentRoute && setTimeout(function() {
 					V7.router.refresh(currentRoute.url);
 				}, 500);
@@ -100,8 +111,8 @@ define(function(require) {
 				var menu = V7.objects.get("/menu");
 				var comp = e.target.up(".page").f7Component;
 				var route = e.target.up(".page").f7Page.route;
-				var index = isAnchored(route);
-				if(index !== undefined) {
+				var index = anchorIndex(route);
+				if(index !== -1) {
 					menu.anchors.splice(index, 1);
 				} else {
 					menu.anchors.unshift({
@@ -136,7 +147,7 @@ define(function(require) {
 		},
 		data: function() {
 			var onderzoek = EM.get("Onderzoek", this.$route.query.key);
-			loadData(onderzoek, this.$route);
+			refresh_v7_export(onderzoek, this.$route);
 			return js.mixIn({
 				loading: isLoading(onderzoek),
 				anchored: isAnchored(this.$route),
@@ -144,8 +155,7 @@ define(function(require) {
 			}, onderzoek);
 		},
 		template: template,
-		
-		load_v7_export: loadData
+		require_v7_export: refresh_v7_export
 	};
 	
 });

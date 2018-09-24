@@ -13,7 +13,7 @@ define(function(require) {
 		menu.anchors = menu.anchors || [];
 		V7.router.refresh("/menu");	
 	});
-
+	
 	return { 
 		data() {
 			var menu = V7.objects.get("/menu");

@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "less": "^3.8.1",
-    "pouchdb": "^7.0.0"
+    "pouchdb": "^7.0.0",
+    "pouchdb-find": "^0.10.5"
   }
 }

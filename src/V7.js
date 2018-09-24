@@ -1,6 +1,6 @@
 define(function(require) {
 	
-	require("leaflet/plugins/bouncemarker");
+	// require("leaflet/plugins/bouncemarker");
 	require("leaflet/plugins/awesome-markers");
 	require("leaflet/node_modules/leaflet-rd/src/index");
 	
@@ -84,6 +84,18 @@ define(function(require) {
 				return v7_objects_idx[id] || this.fetch(id, proto).$object;
 			},
 			fetch: function(id, proto) {
+				
+				if(this._fetching) {
+					if(this._fetching.$object) {
+						var r = this._fetching.then(function() {
+							return V7.objects.fetch(id, proto);
+						});
+						r.$object = this._fetching.$object;
+						return r;
+					}
+					console.log("fetching but no (more) $object?");
+				}
+
 				// Returns a Promise which will resolve when id is refreshed
 				if(v7_objects_idx[id] instanceof Promise) {
 					// console.log("V7.objects.fetch", id, "already fetching");
@@ -92,22 +104,30 @@ define(function(require) {
 				
 				var object = v7_objects_idx[id];
 				if(object === undefined) {
-					// console.log("V7.objects.fetch", id, "created");
-					// object = (v7_objects_idx[id] = {_id: id});
 					object = v7_objects_create(id, proto);
 				}
-				var r = (v7_objects_idx[id] = new Promise(function(resolve, reject) {
-					v7_objects.get(id, function(err, obj) {
-						js.mixIn(object, obj);
-						if(v7_objects_idx[id] instanceof Promise) {
-							v7_objects_idx[id] = object;
-						}
-						resolve(object);
-						v7_objects_emit(object._id, "fetched", [object]);
-						delete r.$object;
-					});
-				}));
+				var START = Date.now(), r = (v7_objects_idx[id] = new Promise(
+					function(resolve, reject) {
+						v7_objects.get(id, function(err, obj) {
+							js.mixIn(object, obj);
+							if(v7_objects_idx[id] instanceof Promise) {
+								v7_objects_idx[id] = object;
+							}
+							resolve(object); 
+							console.log(object._id, "resolved after", Date.now() - START, "ms");
+							v7_objects_emit(object._id, "fetched", [object]);
+							delete r.$object;
+						});
+					}
+				));
 				r.$object = object;
+				
+				this._fetching = r;
+				this._fetching.then(function(res) {
+					delete this._fetching;
+					return res;
+				}.bind(this));
+				
 				return r;
 			},
 			refresh: function(object) {
@@ -147,7 +167,6 @@ define(function(require) {
 						v7_objects_timeouts[object._id] = setTimeout(function() {
 							delete v7_objects_timeouts[object._id];
 							V7.objects.save(object, { delay: false }).then(function(result) {
-								v7_objects_emit(object._id, "saved", [result]);
 								resolve(result);
 							}).catch(reject);
 						}, options.delay);
@@ -157,9 +176,11 @@ define(function(require) {
 				var hash = calcHash(object);
 				if(object.hash_ !== hash) {
 					object.hash_ = hash;
+					object.savedAt_ = Date.now();
 					console.log("V7.objects.save", object._id, object);
 					return new Promise(function(resolve, reject) {
 						v7_objects.put(v7_objects_make_put(object), function(err, result) {
+							v7_objects_emit(object._id, "saved", [result]);
 							if(err) reject(err);
 							if(result && result.ok === true) {
 								object._rev = result.rev;
@@ -272,7 +293,7 @@ define(function(require) {
 		menu: {
 			refresh: function() {}
 		},
-		map$: {
+		maps: {
 		    initialize: function(map) {
 		    	V7.map = map.vars("map");
 				V7.markers = map.vars("cluster");
@@ -329,7 +350,7 @@ define(function(require) {
 		    },
 		    mapOnderzoek: function(onderzoek) {
 		    	// TODO this should be moved to onderzoek/component
-		    	return Onderzoek.load_v7_export(onderzoek).then(function(doc) {
+		    	return Onderzoek.require_v7_export(onderzoek).then(function(doc) {
 		    		var data = doc.root;
 					var meetpunten = Object.keys(data.instances.Meetpunt)
 						.map(_ => EM.get("Meetpunt", _))
@@ -340,7 +361,7 @@ define(function(require) {
 						.map(_ => ({x: parseFloat(_.xcoord), y: parseFloat(_.ycoord)}));
 						
 					if(coords.length === 0) {
-						f7a.dialog.alert(locale("Onderzoek.nogeodata"), locale("Error"));
+						// f7a.dialog.alert(locale("Onderzoek.nogeodata"), locale("Error"));
 						return;
 					}
 					if(coords.length < 4) {
@@ -579,13 +600,13 @@ define(function(require) {
 
 	//	Map	    
 	    getLeafletMap: function() {
-	    	return this.map$.getLeafletMap();
+	    	return V7.maps.getLeafletMap();
 	    },
 	    initializeMap: function(map) {
-	    	return this.map$.initialize(map);
+	    	return V7.maps.initialize(map);
 	    },
 	    mapOnderzoek: function(onderzoek) {
-	    	return this.map$.mapOnderzoek(onderzoek);
+	    	return V7.maps.mapOnderzoek(onderzoek);
 	    }
 	};
 });
