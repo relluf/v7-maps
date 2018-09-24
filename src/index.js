@@ -1,5 +1,5 @@
-var veldoffice_js = "node_modules/veldoffice-js/src";
-//var veldoffice_js = "/home/Workspaces/veldapps.com/veldoffice-js/src";
+// var veldoffice_js = "node_modules/veldoffice-js/src";
+var veldoffice_js = "/home/Workspaces/veldapps.com/veldoffice-js/src";
 require.config({ paths: {
 	"backbone": "node_modules/backbone/backbone",
 	"underscore": "node_modules/underscore/underscore",

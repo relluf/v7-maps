@@ -1,5 +1,7 @@
 define(function(require) {
 	
+	require("leaflet/plugins/bouncemarker");
+	require("leaflet/plugins/awesome-markers");
 	require("leaflet/node_modules/leaflet-rd/src/index");
 	
 	var Browser = require("util/Browser");

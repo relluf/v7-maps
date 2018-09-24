@@ -1,6 +1,5 @@
 define(function(require) {
-	require("leaflet/plugins/bouncemarker");
-	require("leaflet/plugins/awesome-markers");
+	
 	require("stylesheet!./styles.less");
 
 	var template = require("template7!./template.html");
