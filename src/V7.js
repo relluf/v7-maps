@@ -381,6 +381,7 @@ define(function(require) {
 	
 					var markers = onderzoek.meetpunt_markers = L.markerClusterGroup({
 						disableClusteringAtZoom: 13,
+						spiderfyOnMaxZoom: false,
 						// chunkedLoading: true,
 						// chunkDelay: 100,
 						// chunkProgress: function(processed, total, elapsed, layersArray) {

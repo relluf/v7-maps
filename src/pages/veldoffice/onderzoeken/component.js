@@ -16,7 +16,7 @@ define(function(require) {
 		"id", "naam", "projectcode", "contour",
 		"created", "modified", "status", "methode"
 	];
-	var ITEM_HEIGHT = 114;
+	var ITEM_HEIGHT = 119;
 	var PAGE_SIZE = 50;
 	var arr = []; // TODO should be refactored out to a virtualList "local" variable (or should it? sharing the same array over all lists isn't that bad)
 	
@@ -275,41 +275,48 @@ e.target.$blocked = false;
 						
 					}, 500);
 					
-				}
-			},
-			".infinite-scroll-content infinite": function(e) {
-				var page = e.target.up(".page");
-				var view = e.target.up(".view");
-				var sb = f7a.searchbar.get(view.down(".searchbar"));
-				if(!sb.enabled) {
-					if(!page.hasOwnProperty("$infinite-busy")) {
-						page['$infinite-busy'] = Date.now();
-						getNextPage(e).then(function() {
-							delete page['$infinite-busy'];
-							f7a.virtualList.get(page.qs(".virtual-list")).update();
-						});
+				},
+				".searchbar input keydown": function(e) {
+					if(f7a.device.android) {
+						console.log(".searchbar input change", e);
 					}
-				} else {
-					
-					console.log("!!! search-infinite !!!! ");
 				}
 			},
-			".ptr-content ptr:refresh": function(e) {
-				var sb = f7a.searchbar.get(e.target.up(".view").down(".searchbar"));
-				if(sb.enabled) {
-					// f7a.ptr.done(ptr);	
-					// return;
-				}
-				
-				delete getMostRecentModified.promise;
-				getMostRecentModified().then(function() {
-					return getFirstPage(e).then(function(res) {
-						arr.splice.apply(arr, [0, arr.length].concat(res));
-						f7a.ptr.done(e.target);	
-						f7a.virtualList.get(e.target.up(".page").qs(".virtual-list")).update(true);
+			page: {
+				".infinite-scroll-content infinite": function(e) {
+					var page = e.target.up(".page");
+					var view = e.target.up(".view");
+					var sb = f7a.searchbar.get(view.down(".searchbar"));
+					if(!sb.enabled) {
+						if(!page.hasOwnProperty("$infinite-busy")) {
+							page['$infinite-busy'] = Date.now();
+							getNextPage(e).then(function() {
+								delete page['$infinite-busy'];
+								f7a.virtualList.get(page.qs(".virtual-list")).update();
+							});
+						}
+					} else {
+						
+						console.log("!!! search-infinite !!!! ");
+					}
+				},
+				".ptr-content ptr:refresh": function(e) {
+					var sb = f7a.searchbar.get(e.target.up(".view").down(".searchbar"));
+					if(sb.enabled) {
+						// f7a.ptr.done(ptr);	
+						// return;
+					}
+					
+					delete getMostRecentModified.promise;
+					getMostRecentModified().then(function() {
+						return getFirstPage(e).then(function(res) {
+							arr.splice.apply(arr, [0, arr.length].concat(res));
+							f7a.ptr.done(e.target);	
+							f7a.virtualList.get(e.target.up(".page").qs(".virtual-list")).update(true);
+						});
 					});
-				});
-				
+					
+				}
 			}
 		},
 		template: template, on: { pageInit: pageInit } };
