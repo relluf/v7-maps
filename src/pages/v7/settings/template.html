@@ -19,7 +19,36 @@
 	    </div>
 		<div class="block center"></div>
 		<div class="block-title">{{l "Settings"}}</div>
-		<div class="list"><ul>
+		<div class="list accordion-list"><ul>
+			<li class="display-none accordion-item">
+				<a class="item-content item-link">
+					<div class="item-media">
+						<i class="fa fa-fw fa-globe menu-icon bg-color-blue"></i>
+					</div>
+					<div class="item-inner">
+						<div class="item-title">{{l "Language"}}</div>
+						<div class="item-after">{{js "window.locale('Language.' + locale.loc)"}}</div>
+					</div>
+				</a>
+				<div class="accordion-item-content">
+					<div class="list languages" style="padding-left:48px;"><ul>
+						<li><a id="du-NL" class="item-content item-link no-chevron">
+							<div class="item-media">{{l "Language.du-NL.flag"}}</div>
+							<div class="item-inner">
+								<div class="item-title">{{l "Language.du-NL"}}</div>
+								<div class="item-after"></div>
+							</div>
+						</a></li>
+						<li><a id="en-US" class="item-content item-link no-chevron">
+							<div class="item-media">{{l "Language.en-US.flag"}}</div>
+							<div class="item-inner">
+								<div class="item-title">{{l "Language.en-US"}}</div>
+								<div class="item-after"></div>
+							</div>
+						</a></li>
+					</ul></div>
+				</div>
+			</li>
 			<li><a href="/settings/language" class="item-content item-link">
 				<div class="item-media">
 					<i class="fa fa-fw fa-globe menu-icon bg-color-blue"></i>

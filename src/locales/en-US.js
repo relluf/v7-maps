@@ -74,6 +74,7 @@ define(function() { return {
 	"Onderzoek": {
 		"":											"Investigation",
 		".plural":									"Investigations",
+		".new":										"New Investigation",
 		".subtitle":								"List of all investigation projects",
 		".nophotos-label":							"Er zijn nog geen foto's aan dit onderzoek toegevoegd. U kunt de eerste zijn.",
 		".nogeodata-alert":							"Dit onderzoek bevat nog geen geografische informatie.",

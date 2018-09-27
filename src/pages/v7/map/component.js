@@ -12,18 +12,6 @@ define(function(require) {
 
 	var on = {
 		pageInit(e) {
-			// $$(".swipe-handle.left", e.target).on("click", function() {
-			// 	f7a.panel.left.open();
-			// });
-			
-			// $$(".toolbar .link.home", e.target).on("click", function() {
-			// 	var origin = [52, 5.4, 2]; 
-			// 	V7.map.setView(origin, origin[2], {animate: true});		
-			// });
-			// $$(".toolbar .link.location", e.target).on("click", function() {
-			// 	e.target.down(".leaflet-control-locate a").click();
-			// });
-			
 			return Blocks.instantiate(["Map", "map"], "pages/map.html")
 				.then(function(map) {
 					map.setParentNode(e.target.qs(".page-content"));
@@ -33,7 +21,6 @@ define(function(require) {
 					//	Load all anchored onderzoeken
 						var loaded = {};
 						V7.objects.fetch("/menu").then(function(menu) {
-							console.warn("Mapping anchors");
 							var anchors = menu.anchors;
 							anchors.forEach(function(anchor) {
 								if(anchor.path === "/veldoffice/onderzoek") {

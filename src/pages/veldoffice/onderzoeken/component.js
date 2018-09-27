@@ -34,15 +34,15 @@ define(function(require) {
 			return (this.requesting[page] = V7.objects.fetch(this.path + page).then(function(result) {
 				var page_modified = new Date(result.modified || 0).getTime();
 				
-				console.log("Pager.load()", mostRecent_modified - page_modified,
-					me.path, { most_recent: new Date(mostRecent_modified), 
-						modified: new Date(page_modified) });
+				// console.log("Pager.load()", mostRecent_modified - page_modified,
+				// 	me.path, { most_recent: new Date(mostRecent_modified), 
+				// 		modified: new Date(page_modified) });
 				
 				delete me.requesting[page];
 
 				if(result.data) {
 					if(mostRecent_modified > page_modified) {
-						console.log("page expired", page);
+						// console.log("page expired", page);
 						delete result.data;
 						delete result.modified;
 					}
@@ -57,7 +57,7 @@ define(function(require) {
 			
 			return getMostRecentModified().then(function(mrm) {
 				if(!page.modified) {
-					console.log(">>>> page modified SET", page);
+					// console.log(">>>> page modified SET", page);
 					page.modified = new Date(mrm);
 				}
 				return V7.objects.save(page, { delay: false });
@@ -230,6 +230,9 @@ define(function(require) {
 	return { 
 		bindings: {
 			navbar: {
+				".add click": function(e) {
+					console.log("add", e);
+				},
 				".searchbar searchbar:disable": function(e) {
 					var vl = f7a.virtualList.get(
 						e.target.up(".view")
@@ -276,8 +279,9 @@ e.target.$blocked = false;
 					}, 500);
 					
 				},
-				".searchbar input keydown": function(e) {
+				".searchbar input change": function(e) {
 					if(f7a.device.android) {
+						this.up(".searchbar").dispatchEvent(new Event("searchbar:search", e));
 						console.log(".searchbar input change", e);
 					}
 				}

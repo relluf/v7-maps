@@ -1,11 +1,13 @@
-<div class="page onderzoek {{#if loading}}loading{{/if}}" data-key="{{id}}">
+<div class="popup"><div class="view"><div class="page">
+
 	<div class="navbar">
 	    <div class="navbar-inner">
 	        <div class="left sliding">
-	        	<a class="back link"><i class="icon icon-back"></i><span class=""></span></a>
+	        	<a class="link popup-close">{{l "Cancel"}}</a>
 	    	</div>
-	        <div class="center sliding title">{{l "Onderzoek.title"}}</div>
+	        <div class="center sliding title">{{l "Onderzoek.new"}}</div>
 	        <div class="right sliding">
+	        	<a class="link popup-close">{{l "Done"}}</a>
 	            <!--<a class="link"><i class="f7-icons">share</i>&nbsp;</a>-->
 	        </div>
 	    </div>
@@ -22,7 +24,7 @@
 			<div class="ptr-arrow"></div>
 	    </div>
 		<div class="tabs">
-			<div id="tab-info-{{unique}}" class="tab tab-active">
+			<div id="tab-info-{{unique}}" class="tab">
 				<div class="block"></div>
 				<div class="title-block">
 					<div class="subtitle bold">&nbsp;{{naam}}&nbsp;</div>
@@ -122,7 +124,7 @@
 				</ul></div>
 				{{/if}}
 			</div>
-			<div id="tab-attributes-{{unique}}" class="tab">
+			<div id="tab-attributes-{{unique}}" class="tab tab-active">
 				<div class="block-title">{{l "Onderzoek.title"}}</div>
 				<div class="list list-attributes"><ul>
 					<li><a class="item-link item-content">
@@ -204,4 +206,5 @@
 			</div>
 		</div>
 	</div>
-</div>
+
+</div></div></div>

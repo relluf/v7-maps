@@ -28,7 +28,7 @@ define(function(require) {
 	function calcHash(object) {
 		var hash = {};
 		for(var k in object) {
-			if(k.charAt(0) !== "_" && k.endsWith("_") === false) {
+			if(k.indexOf("$$") !== 0 && k.charAt(0) !== "_" && k.endsWith("_") === false) {
 				hash[k] = object[k];
 			}
 		}
@@ -76,6 +76,7 @@ define(function(require) {
 		objects: {
 			idx: v7_objects_idx, listeners: v7_objects_listeners,
 			db: v7_objects,
+			
 			get: function(id, proto) {
 				// Always returns the same JavaScript object
 				if(v7_objects_idx[id] instanceof Promise) {
@@ -85,20 +86,9 @@ define(function(require) {
 			},
 			fetch: function(id, proto) {
 				
-				if(this._fetching) {
-					if(this._fetching.$object) {
-						var r = this._fetching.then(function() {
-							return V7.objects.fetch(id, proto);
-						});
-						r.$object = this._fetching.$object;
-						return r;
-					}
-					console.log("fetching but no (more) $object?");
-				}
-
 				// Returns a Promise which will resolve when id is refreshed
 				if(v7_objects_idx[id] instanceof Promise) {
-					// console.log("V7.objects.fetch", id, "already fetching");
+					console.log("V7.objects.fetch", id, "already fetching");
 					return v7_objects_idx[id];
 				}
 				
@@ -106,6 +96,7 @@ define(function(require) {
 				if(object === undefined) {
 					object = v7_objects_create(id, proto);
 				}
+				
 				var START = Date.now(), r = (v7_objects_idx[id] = new Promise(
 					function(resolve, reject) {
 						v7_objects.get(id, function(err, obj) {
@@ -113,8 +104,14 @@ define(function(require) {
 							if(v7_objects_idx[id] instanceof Promise) {
 								v7_objects_idx[id] = object;
 							}
+							for(var k in object) {
+								if(k.indexOf("$$") === 0) {
+									delete object[k];
+									console.log("cleaning", object._id, k);
+								}
+							}
 							resolve(object); 
-							console.log(object._id, "resolved after", Date.now() - START, "ms");
+							// console.log(object._id, "resolved after", Date.now() - START, "ms");
 							v7_objects_emit(object._id, "fetched", [object]);
 							delete r.$object;
 						});
@@ -137,17 +134,7 @@ define(function(require) {
 				
 				return V7.objects.fetch(object._id);
 			},
-			// set: function(id, value) {
-			// 	if(!value) value = v7_objects_idx[id];
-			// 	if(!value._id) value._id = id;
-				
-			// 	var current_value = v7_objects_idx[id];
-			// 	v7_objects_idx[id] = value;
-			// 	return v7_objects.put(v7_objects_idx[id], function(err, result) {
-			// 		if(err) throw err;
-			// 		return result;
-			// 	});
-			// },
+			
 			save: function(object, options) {
 				if(typeof object === "string") {
 					return V7.objects.save(V7.objects.get(object), options);
@@ -226,7 +213,7 @@ define(function(require) {
 					f7a.dialog.preloader(locale("OneMoment"));
 					require("veldoffice/Session").logout().then(function() {
 						V7.objects.db.destroy();
-						localStorage.removeItem("services.veldoffice.autologin");
+						localStorage.removeItem("v7.services.veldoffice.autologin");
 						setTimeout(function() {
 							location.reload();	
 						}, 2500);
@@ -250,7 +237,6 @@ define(function(require) {
 				["main", "left"/*, "detail"*/].forEach(function(view) {
 					var router = f7a.views[view].router;
 					if(router.currentRoute.url === url) {
-						console.log("refreshing", view, url);
 						router.refreshPage();
 					}
 				});
@@ -501,14 +487,14 @@ define(function(require) {
 		sessionNeeded: function() {
 			if(Session.isAuthenticated()) { return; }
 			
-			var autologin = localStorage.getItem("services.veldoffice.autologin");
+			var autologin = localStorage.getItem("v7.services.veldoffice.autologin");
 			if(autologin) {
-				var user = localStorage.getItem("services.veldoffice.user");
-				var password = localStorage.getItem("services.veldoffice.password");
+				var user = localStorage.getItem("v7.services.veldoffice.user");
+				var password = localStorage.getItem("v7.services.veldoffice.password");
 				
 				return Session.login(user, password).then(function() {
 					if(!Session.isAuthenticated()) {
-						localStorage.removeItem("services.veldoffice.autologin");
+						localStorage.removeItem("v7.services.veldoffice.autologin");
 						V7.sessionNeeded();
 					}
 				});

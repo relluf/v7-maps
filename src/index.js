@@ -63,7 +63,7 @@ define("framework7/plugins/auto-back-title", function() {
     var previous;
     document.addEventListener("page:mounted", function (e) {
     	if(e.detail.direction !== "forward") {
-			console.log("page:mounted - no direction", e.detail);
+			// console.log("page:mounted - no direction", e.detail);
     	} else {
     		previous = e.detail.pageFrom;
     	}
@@ -207,7 +207,6 @@ define("pouchdb", [
 define("font-awesome", ["stylesheet!node_modules/@fortawesome/fontawesome-free/css/all.css"], function(fa) {
 	return fa;
 });
-
 define("leaflet", ["leaflet/leaflet-default"], function(leaflet) { return leaflet; });
 define("blocks-js", ["blocks/Blocks", "blocks/Factory"], function(Blocks, Factory) {
 	// TODO Refactor to blocks/Superblock?
@@ -227,9 +226,18 @@ define("blocks-js", ["blocks/Blocks", "blocks/Factory"], function(Blocks, Factor
 window.locale_base = "locales/";
 
 require(["moment", "moment/locale/nl", "locale!en-US", "locale!du-NL"], function(moment, nl) {
+	var locale = localStorage.getItem("v7.locale");
+	if(locale === null) {
+		localStorage.setItem("v7.locale", (locale = "du-NL"));
+	}
 	
-    moment.locale("nl");
-	locale.loc = "du-NL";
+	if(locale === "du-NL") {
+	    moment.locale("nl");
+		window.locale.loc = "du-NL";
+	} else {//if(locale === "en-US") {
+		// moment.locale("")
+		window.locale.loc = "en-US";
+	}
 
 	require(["framework7", "leaflet"], function(Framework7, leaflet) {
 		

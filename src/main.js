@@ -128,7 +128,7 @@ define(function(require) {
 	leftView.router.navigate("/menu", { animate: false });
 
 	if(window.location.toString().endsWith("cordova") || window.location.toString().endsWith("wash")) {
-		require(["script!../../v7-cordova/cordova.js"]);
+		require(["script!node_modules/v7-cordova/cordova.js"]);
 		
 		document.addEventListener("deviceready", function() {
 	    	cordova.require("cordova-plugin-statusbar.statusbar")
@@ -136,12 +136,12 @@ define(function(require) {
 	   	});
 	}
 	
-	app.panel.left.on("open", function() { localStorage.setItem("left-panel-opened", true ) });
-	app.panel.left.on("close", function() { localStorage.setItem("left-panel-opened", false)});
-	if(localStorage.getItem("left-panel-opened") === "true") {
+	app.panel.left.on("open", function() { localStorage.setItem("v7.left-panel-opened", true ) });
+	app.panel.left.on("close", function() { localStorage.setItem("v7.left-panel-opened", false)});
+	if(localStorage.getItem("v7.left-panel-opened") === "true") {
 		app.panel.left.open(false);
 	}
-	app.statusbar.hide();
+	// app.statusbar.hide();
 	
 	// initialize left when session info is available
 	Session.info().then(function(res) {
@@ -150,14 +150,10 @@ define(function(require) {
 			V7.objects.save("/menu"); // TODO Hmmz, could this be automatic? pagein/out/refresh
 		}
 	});
-		
 	Session.refresh().then(function() {
 		V7.sessionNeeded();
 	});
 
-	// document.documentElement.classList.remove("md");
-	// document.documentElement.classList.add("ios");
-	
 	function hasClass(node, cl) {
 		return node.classList.contains(cl);
 	}

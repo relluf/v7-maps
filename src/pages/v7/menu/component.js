@@ -75,19 +75,6 @@ define(function(require) {
 			".button.scan click": function(e) {
 				V7.scanCode({flash:"off"}, function() { console.log("ok", arguments) }, function() { console.log("err", arguments) });
 				$$(e.target).toggleClass("button-fill");
-			},
-			
-			".button.rewind click": function(e) {
-				history.back();						
-			},
-			".button.reload click": function(e) {
-				location.reload();
-			},
-			".button.logout click": function(e) {
-				require("veldoffice/Session").logout().then(function() {
-					localStorage.removeItem("services.veldoffice.autologin");
-					location.reload();	
-				});
 			}
 		}
 	};

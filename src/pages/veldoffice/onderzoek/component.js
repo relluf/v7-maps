@@ -30,47 +30,44 @@ define(function(require) {
 		var d = new Date(doc.modified || 0).getTime();
 		return o > d;
 	}
-	
-	function getNestedDoc(onderzoek, name) {
-		var nested = String.format("/veldoffice/onderzoek/%s/docs/%s", onderzoek.id, name);
-		var r = V7.objects.get(nested);
-		if(r === undefined) {
-			console.log("getNestedDoc is undefined?");
-			r = V7.objects.get(nested); debugger;
+
+	function check_loaded(onderzoek, doc, currentRoute) {
+		if(doc.root && !doc.$$loaded) {
+			EM.processWalkResult2(doc.root);
+			doc.$$loaded = true;
+			currentRoute && setTimeout(function() {
+				V7.router.refresh(currentRoute.url);
+			}, 500);
 		}
-		return r;
+	}	
+	function getNestedDoc(onderzoek, name) {
+		return V7.objects.get(String.format(
+				"/veldoffice/onderzoek/%s/docs/%s", onderzoek.id, name));
 	}
 	function dateAsString(date) {
 		return typeof date === "string" ? date : (new Date(date)).toJSON();
 	}
 	
-	function refresh_v7_export(onderzoek, currentRoute) {
+	function require_v7_export(onderzoek, currentRoute) {
 		var doc = getNestedDoc(onderzoek, "V7-export");
-		return V7.objects.refresh(doc).then(function() { 
-			if(!doc.root || isExpired(onderzoek, doc)) {
+		return Promise.resolve(V7.objects.idx[doc._id]).then(function() {
+			if(doc.root instanceof Promise) {
+				console.log("already requesting V7-export");
+				return doc.root;
+			} else if(!doc.root || isExpired(onderzoek, doc)) {
 				var url = URL + onderzoek.id + "&" + Date.now();
+				delete doc.$$loaded;
 				return (doc.root = Session.get(url).then(function(resp) {
+					console.log("got", url);
 					doc.root = resp;
 					doc.modified = onderzoek.modified || new Date();
 					return V7.objects.save(doc, { delay: false }).then(function() {
-						EM.processWalkResult2(resp);
-						doc.$$loaded = true;
-						currentRoute && setTimeout(function() {
-							V7.router.refresh(currentRoute.url);
-						}, 500);
+						check_loaded(onderzoek, doc, currentRoute);
 						return doc;
 					});
 				}));
-			} else if(doc.root instanceof Promise) {
-				return doc.root;
-			} else if(doc.root && !doc.$$loaded) {
-				EM.processWalkResult2(doc.root);
-				doc.$$loaded = true;
-				// console.log(onderzoek.modified, "vs", doc.modified);
-				currentRoute && setTimeout(function() {
-					V7.router.refresh(currentRoute.url);
-				}, 500);
 			}
+			check_loaded(onderzoek, doc, currentRoute);
 			return doc;
 		});
 	}
@@ -147,7 +144,7 @@ define(function(require) {
 		},
 		data: function() {
 			var onderzoek = EM.get("Onderzoek", this.$route.query.key);
-			refresh_v7_export(onderzoek, this.$route);
+			require_v7_export(onderzoek, this.$route);
 			return js.mixIn({
 				loading: isLoading(onderzoek),
 				anchored: isAnchored(this.$route),
@@ -155,7 +152,7 @@ define(function(require) {
 			}, onderzoek);
 		},
 		template: template,
-		require_v7_export: refresh_v7_export
+			require_v7_export: require_v7_export
 	};
 	
 });

@@ -1,3 +1,11 @@
+### 2018-09-27
+- Preparing to merge this project with the V7 project
+- Developing popup-routes (_still seems to me that a popup in essence is a page, why is there the need to define it as a popup in HTML code?_)
+
+### 2018-09-26
+- Prefixing localStorage keys with `v7.`
+- Introducing pages/settings/language
+
 ### 2018-09-24
 - Previously loaded investigations are loaded during startup (currently sorted by "savedAt_" of the corresponding PouchDB document)
 - That's right! Adding pouchdb.find to this mix. Now it's getting interesting
